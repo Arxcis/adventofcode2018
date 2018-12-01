@@ -10,7 +10,7 @@ for var in $INPUT; do
     RESULT=$(($RESULT + $var))
 done
 
-echo "part1 $RESULT"
+echo $RESULT
 
 # PART 2
 # Takes a few seconds :)
@@ -44,5 +44,5 @@ while true; do
     fi
 done
 
-echo "part2 $CURRENT"
+echo $CURRENT
 

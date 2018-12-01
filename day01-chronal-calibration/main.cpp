@@ -24,7 +24,7 @@ int main(int argc, char** argv)
         total += var;
     }
 
-    std::cout << "part1 " << total << '\n';
+    std::cout << total << '\n';
 
 
     // Calculates puzzle 2;
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
             auto ret = duplicates.insert(std::pair<int, int>(current, 1));
             if (ret.second == false)
             {
-                std::cout << "part2 " << current << '\n';
+                std::cout << current << '\n';
                 found = true;
                 break;
             }

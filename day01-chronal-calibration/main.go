@@ -31,7 +31,7 @@ func main() {
         for _, change := range frequencyChanges {
             currentFrequency += change
         }
-        fmt.Println("part1", currentFrequency)
+        fmt.Println(currentFrequency)
     }
     //
     // Part 2
@@ -54,7 +54,7 @@ func main() {
                 currentFrequency += change
             }
         }
-        fmt.Println("part2", firstDuplicate)
+        fmt.Println(firstDuplicate)
     }
 }
 
