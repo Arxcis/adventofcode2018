@@ -1,6 +1,6 @@
 # Welcome to Advent of code 2018 - The many languages challange!
 
-![any-programming-language](https://img.appnee.com/appnee.com/Offline-Documentations-for-Any-Programming-Languages-AIO.png)
+![any-programming-language](languages.png)
 
 Link: https://adventofcode.com/2018
 
