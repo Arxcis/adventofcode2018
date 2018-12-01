@@ -39,8 +39,8 @@ $ ./main +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
 Each program is expected to output two answers. One for `part1` and one for `part2`:
 ```
 $ ./main $(cat input)
-408                           # Part1 answer
-55250                         # Part2 answer
+408
+55250
 
 ```
 * Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on adventofcode.com. Use your own input-data to score points there.
