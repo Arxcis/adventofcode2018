@@ -24,22 +24,23 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
 * Every solution-file is named 'main' (e.g main.py, main.go, main.ru, main.js, main.cs, ....)
 
 **Input**
-
-Every folder contains a `input`-file. Expand the data of this file to program arguments using the unix `cat` command.
+* Each program should expect the input as a list of command-line arguments:
+* Every folder contains a `input`-file with testdata you can use.
 ```
-$ go run main.go $(cat input)
+$ ./main $(cat input)
 ```
 ...expands to
 ```
-$ go run main.go +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
+$ ./main +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
 ```
 
 **Output**
 
- `part1` or `part2` followed by a space and your answer.
+Each program is expected to output two answers. One for `part1` and one for `part2`:
 ```
-$ go run main.go $(cat input)
-part1 408
-part2 55250
-```
+$ ./main $(cat input)
+408                           # Part1 answer
+55250                         # Part2 answer
 
+```
+* Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on adventofcode.com. Use your own input-data to score points there.
