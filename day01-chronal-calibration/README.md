@@ -56,3 +56,11 @@ Here are other examples:
 
 What is the first frequency your device reaches twice?
 
+## Results 01.12.18 22:53
+
+[![asciicast](https://asciinema.org/a/LZEMwYSmSpR5zr7WbrxPhkUwf.svg)](https://asciinema.org/a/LZEMwYSmSpR5zr7WbrxPhkUwf)
+
+Cmd
+```
+input=$(cat input) && echo -e "\ngo" && go run main.go $input && echo -e "\ncpp" && ./main $input && echo -e "\nbash" && bash main.bash $input
+```
