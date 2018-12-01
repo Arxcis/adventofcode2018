@@ -13,49 +13,34 @@ done
 echo "part1 $RESULT"
 
 # PART 2
+# NOTE: The map functionality requires Bash 4.3 according to https://stackoverflow.com/a/30757358
 
-SEEN=()
+declare -A SEEN
 CURRENT=0
 INPUT=("$@")
 INPUT_LENGTH=${#INPUT[@]}
 INPUT_INDEX=0
-DONE=false
 
 while true; do
 
-
     # if already seen, break. we're done
-    for E in "${SEEN[@]}"; do
-        if [[ $CURRENT = $E ]]; then
-            echo "yay!"
-            echo $E
-            DONE=true
-            break
-        fi
-    done
-
-    if [[ $DONE = true ]]; then
+    if [[ -v SEEN[$CURRENT] ]]; then
         break
     fi
 
     # if got here, not already seen. add to seen
-    SEEN+=($CURRENT)
-
-
+    # (value not used)
+    SEEN[$CURRENT]=1
 
     # calc next freq
     CHANGE="${INPUT[$INPUT_INDEX]}"
     CURRENT=$((CURRENT + CHANGE))
 
-    #echo "CURR: $CURRENT, I: $INPUT_INDEX, CHANGE (made): $CHANGE"
-
     # make sure the loop wraps
     ((INPUT_INDEX++))
     if [[ $INPUT_INDEX -ge $INPUT_LENGTH ]]; then
         INPUT_INDEX=0
-        #echo "looping... size of seen: ${#SEEN[@]}"
     fi
-
 done
 
 echo "part2 $CURRENT"
