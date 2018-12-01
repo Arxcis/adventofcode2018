@@ -10,7 +10,7 @@ Contributing:
 * Fork repo or ask to join as contributor
 
 Rules:
-* There is no time constraints. (You don't have to submit day01 on 01. desember 2018)
+* There are no deadlines (You don't have to submit day01 on 01. desember 2018)
 * One file per language per day.
 * Every solution-file is named 'main' (e.g main.py, main.go, main.ru, main.js, main.cs, ....)
 * You may look at each others solutions, or you can do it on your own. Pick your challange.
