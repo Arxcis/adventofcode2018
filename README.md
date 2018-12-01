@@ -13,6 +13,7 @@ Rules:
 * One file per language per day.
 * Every solution-file is named 'main' (e.g main.py, main.go, main.ru, main.js, main.cs, ....)
 * You may look at each others solutions, or you can do it on your own. Pick your challange.
+* Deadline 30. november 2019
 
 # Solution matrix
 
