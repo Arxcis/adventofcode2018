@@ -12,7 +12,7 @@ Contributing:
 Rules:
 * One file per language per day.
 * Every solution-file is named 'main' (e.g main.py, main.go, main.ru, main.js, main.cs, ....)
-* You may look at each others solution, or you can do it on your own. Pick your challange.
+* You may look at each others solutions, or you can do it on your own. Pick your challange.
 
 # Solution matrix
 
