@@ -1,7 +1,5 @@
 # Welcome to Advent of code 2018 - The many languages challange!
 
-![any-programming-language](languages.png)
-
 Link: https://adventofcode.com/2018
 
 In this repo we try to solve the daily tasks in as many languages as possible. Pick a language which does not have a solution yet and solve it.
@@ -12,6 +10,8 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | Language   | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
  |------------|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
  | Golang     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | C++        | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | Bash        | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
