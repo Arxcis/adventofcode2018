@@ -1,0 +1,9 @@
+{
+    "name": "adventofcode2018",
+    "scripts": {
+        "test": "ava"
+    },
+    "devDependencies": {
+        "ava": "^0.25.0"
+    }
+}

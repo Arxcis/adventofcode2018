@@ -17,3 +17,6 @@ tags
 
 ## build files
 *main
+
+## npm
+node_modules/
