@@ -11,20 +11,18 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  |------------|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
  | Golang     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
+### General
+* There are no deadlines (You don't have to submit day01 on 01. desember 2018)
+* You may look at other's solutions, or you can do it on your own. Pick your challange.
+
 ### Contributing
 * To contribute make a pull request with your solution.
 * Name your pull-request like this example 'day03-golang'
 * Fork repo or ask to join as contributor
-
-### Rules
-* There are no deadlines (You don't have to submit day01 on 01. desember 2018)
-* One file per language per day.
 * Every solution-file is named 'main' (e.g main.py, main.go, main.ru, main.js, main.cs, ....)
-* You may look at each others solutions, or you can do it on your own. Pick your challange.
-
-### Input/output
 
 **Input**
+
 Every folder contains a `input`-file. Expand the data of this file to program arguments using the unix `cat` command.
 ```
 $ go run main.go $(cat input)
@@ -35,9 +33,11 @@ $ go run main.go +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
 ```
 
 **Output**
+
  `part1` or `part2` followed by a space and your answer.
 ```
 $ go run main.go $(cat input)
 part1 408
 part2 55250
 ```
+
