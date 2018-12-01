@@ -7,6 +7,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
 Contributing:
 * To contribute make a pull request with your solution.
 * Name your pull-request like this example 'day03-golang'
+* Fork repo or ask to join as contributor
 
 Rules:
 * One file per language per day.
