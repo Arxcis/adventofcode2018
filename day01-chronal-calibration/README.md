@@ -1,4 +1,4 @@
-# --- Day 1: Chronal Calibration ---
+# Day 1: Chronal Calibration
 
 ## --- Part 1 ---
 
