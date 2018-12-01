@@ -1,7 +1,6 @@
 package main
 
 import (
-    "bufio"
     "os"
     "strconv"
     "fmt"
@@ -9,35 +8,33 @@ import (
 
 func main() {
     //
-    // Read file values into array
+    // Read args values into integer array
     //
-    file, err := os.Open("puzzle.input")
-    check(err)
-    
-    frequencyChanges := make([]int, 0)
-    r := bufio.NewReader(file)
-    for lineb, stop := r.ReadBytes('\n'); stop == nil; lineb, stop = r.ReadBytes('\n') { 
-        line := string(lineb[:len(lineb)-1])
-        
-        change, _ := strconv.ParseInt(line, 10, 32)
-        check(err)
-
-        frequencyChanges = append(frequencyChanges, int(change))
+    if len(os.Args) < 2 {
+        panic("Missing input")
     }
+    args := os.Args[1:]
 
+    frequencyChanges := make([]int, len(args))
+    for i, changeStr := range args { 
+        change, e := strconv.ParseInt(changeStr, 10, 32)
+        if e != nil {
+            panic(e)
+        }
+        frequencyChanges[i] = int(change)
+    }
     //
-    // Puzzle 1
+    // Part 1
     //
     {
         currentFrequency := 0
         for _, change := range frequencyChanges {
-            fmt.Println(change)
             currentFrequency += change
         }
-        fmt.Println("day01-cronal-calibration-puzzle1:", currentFrequency)
+        fmt.Println("part1", currentFrequency)
     }
     //
-    // Puzzle 2
+    // Part 2
     //
     {
         currentFrequency := 0
@@ -57,12 +54,7 @@ func main() {
                 currentFrequency += change
             }
         }
-        fmt.Println("day01-cronal-calibration-puzzle2:", firstDuplicate)
+        fmt.Println("part2", firstDuplicate)
     }
 }
 
-func check(e error) {
-    if e != nil {
-        panic(e)
-    }
-}
