@@ -4,23 +4,23 @@ const _exec = require('child_process').exec;
 
 exports.testGo = async (t, dirpath) => {
 
-    let input,expectedOutput
+    let input,expected
     try {
-        expectedOutput = await readFile(dirpath+"/output")
+        expected = await readFile(dirpath+"/output")
         input = await readFile(dirpath+"/input")
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
 
     let output = await exec(`go run ${dirpath}/main.go ${input}`)
     
-    t.is(output, expectedOutput)
+    t.is(output, expected)
 }
 
 exports.testCpp = async (t, dirpath) => {
 
-    let input,expectedOutput
+    let input,expected
     try {
-        expectedOutput = await readFile(dirpath+"/output")
+        expected = await readFile(dirpath+"/output")
         input = await readFile(dirpath+"/input")
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
@@ -29,21 +29,21 @@ exports.testCpp = async (t, dirpath) => {
     let output = await exec(`${dirpath}/main ${input}`, {silent: true})
     await exec(`rm ${dirpath}/main`)
 
-    t.is(output, expectedOutput)
+    t.is(output, expected)
 }
 
 exports.testBash = async (t, dirpath) => {
 
-    let input,expectedOutput
+    let input,expected
     try {
-        expectedOutput = await readFile(dirpath+"/output")
+        expected = await readFile(dirpath+"/output")
         input = await readFile(dirpath+"/input")
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
 
     let output = await exec(`bash  ${dirpath}/main.bash ${input}`);
     
-    t.is(output, expectedOutput)
+    t.is(output, expected)
 }
 
 const exec = commands => {
