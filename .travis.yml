@@ -4,6 +4,6 @@ matrix:
       node_js: "node"
       os: osx
       before_install:
-        - brew install go gcc bash python
+        - brew install gcc bash
       script:
         - npm run test
