@@ -13,8 +13,8 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | Bash       | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Python3    |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
-### Status tests - 01.12.2018
-[![asciicast](https://asciinema.org/a/ajAsZiFYWPKPUk0LAO45lqbQE.svg)](https://asciinema.org/a/ajAsZiFYWPKPUk0LAO45lqbQE)
+### Status tests - 02.12.2018
+[![asciicast](https://asciinema.org/a/J0uU4h7hJ3MHJNXDXO4G8dgpp.svg)](https://asciinema.org/a/J0uU4h7hJ3MHJNXDXO4G8dgpp)
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
