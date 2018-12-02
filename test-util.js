@@ -46,6 +46,21 @@ exports.testBash = async (t, dirpath) => {
     t.is(output, expected)
 }
 
+exports.testPython = async (t, dirpath) => {
+
+    let input,expected
+    try {
+        expected = await readFile(dirpath+"/output")
+        input = await readFile(dirpath+"/input")
+                      .then(input => input.split('\n').join(' '))
+    } catch (e) {t.fail(e)}
+
+    let output = await exec(`python3  ${dirpath}/main.py ${input}`);
+    
+    t.is(output, expected)
+}
+
+
 const exec = commands => {
     return new Promise(resolve => {
         _exec(commands, (err, stdout) => {

@@ -11,6 +11,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | Golang     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | C++        | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Bash       | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | Python3    |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
 ### Status tests - 01.12.2018
 [![asciicast](https://asciinema.org/a/ajAsZiFYWPKPUk0LAO45lqbQE.svg)](https://asciinema.org/a/ajAsZiFYWPKPUk0LAO45lqbQE)
