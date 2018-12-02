@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <map>
+#include <set>
 #include <vector>
 
 int main(int argc, char** argv)
@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 
 
     // Calculates puzzle 2;
-    std::map<int, int> duplicates;
+    std::set<int> duplicates;
     int current = 0;
     bool found = false;
     while (!found)
@@ -36,13 +36,14 @@ int main(int argc, char** argv)
         for (auto var : input)
         {
             current += var;
-            auto ret = duplicates.insert(std::pair<int, int>(current, 1));
-            if (ret.second == false)
-            {
+
+            if (duplicates.find(current) != duplicates.end()) {
                 std::cout << current << '\n';
                 found = true;
-                break;
+                break;                
             }
+            
+            duplicates.insert(current);
         }
     }
     return 0;
