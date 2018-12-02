@@ -1,0 +1,6 @@
+matrix:
+  include:
+    - language: python
+      python: 3.6
+      script:
+        - python3 day02-inventory-managment-system/main.py
