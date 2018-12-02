@@ -1,60 +1,49 @@
-const test = require('ava')
 const fs = require('fs')
 const _exec = require('child_process').exec;
 
-exports.testGo = dirpath => {
-    test(`main.go`, async t => {
 
-        let output = await readFile(dirpath+"/output")
-        let input = await readFile(dirpath+"/input")
+exports.testGo = async (t, dirpath) => {
 
-        input = input.split('\n').join(' ')
+    let input,expectedOutput
+    try {
+        expectedOutput = await readFile(dirpath+"/output")
+        input = await readFile(dirpath+"/input")
+                      .then(input => input.split('\n').join(' '))
+    } catch (e) {t.fail(e)}
 
-        let result = await exec(`go run ${dirpath}/main.go ${input}`)
-        if (result !== output) {
-            t.fail(`${result} !== \n${output}`)
-        }
-        t.pass()
-    });
+    let output = await exec(`go run ${dirpath}/main.go ${input}`)
+    
+    t.is(output, expectedOutput)
 }
 
-exports.testCpp = dirpath => {
+exports.testCpp = async (t, dirpath) => {
 
-    test('main.cpp', async t => {
+    let input,expectedOutput
+    try {
+        expectedOutput = await readFile(dirpath+"/output")
+        input = await readFile(dirpath+"/input")
+                      .then(input => input.split('\n').join(' '))
+    } catch (e) {t.fail(e)}
 
-        let output = await readFile(dirpath+"/output")
-        let input = await readFile(dirpath+"/input")
+    await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main`)
+    let output = await exec(`${dirpath}/main ${input}`, {silent: true})
+    await exec(`rm ${dirpath}/main`)
 
-        input = input.split('\n').join(' ')
-
-        await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main`)
-        let result = await exec(`${dirpath}/main ${input}`, {silent: true})
-        await exec(`rm ${dirpath}/main`)
-
-        if (result !== output) {
-            t.fail(`${result} !== \n${output}`)
-        }
-        t.pass()
-    })
+    t.is(output, expectedOutput)
 }
 
-exports.testBash = dirpath => {
+exports.testBash = async (t, dirpath) => {
 
-    test('main.bash', async t => {
+    let input,expectedOutput
+    try {
+        expectedOutput = await readFile(dirpath+"/output")
+        input = await readFile(dirpath+"/input")
+                      .then(input => input.split('\n').join(' '))
+    } catch (e) {t.fail(e)}
 
-        let output = await readFile(dirpath+"/output")
-        let input = await readFile(dirpath+"/input")
-
-        input = input.split('\n').join(' ')
-
-        let result = await exec(`bash  ${dirpath}/main.bash ${input}`);
-
-        if (result !== output) {
-            t.fail(`${result} !== \n${output}`)
-        }
-        t.pass()
-
-    });
+    let output = await exec(`bash  ${dirpath}/main.bash ${input}`);
+    
+    t.is(output, expectedOutput)
 }
 
 const exec = commands => {
@@ -71,7 +60,10 @@ const readFile = (dirpath) => {
             if (err) {
                 reject(err)
             }
-            resolve(data.toString())
+            if (data) {
+                resolve(data.toString())
+            }
+            reject(err)
         })
     })
 }

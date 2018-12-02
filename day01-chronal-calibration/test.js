@@ -1,3 +1,4 @@
+import test from 'ava'
 import {
     testGo,
     testCpp,
@@ -5,6 +6,6 @@ import {
 } from '../test-util'
 
 const dirpath = __dirname
-testGo(dirpath)
-testCpp(dirpath)
-testBash(dirpath)
+test(`main.go`, async t => await testGo(t, dirpath))
+test(`main.cpp`, async t => await testCpp(t, dirpath))
+test(`main.bash`, async t => await testBash(t, dirpath))
