@@ -6,8 +6,8 @@ exports.testGo = async (t, dirpath) => {
 
     let input,expected
     try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
+        expected = await readFile(`${dirpath}/output`)
+        input = await readFile(`${dirpath}/input`)
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
 
@@ -20,14 +20,14 @@ exports.testCpp = async (t, dirpath) => {
 
     let input,expected
     try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
+        expected = await readFile(`${dirpath}/output`)
+        input = await readFile(`${dirpath}/input`)
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
 
-    await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main`)
-    let output = await exec(`${dirpath}/main ${input}`, {silent: true})
-    await exec(`rm ${dirpath}/main`)
+    await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o main-cpp`)
+    let output = await exec(`./main-cpp ${input}`)
+    await exec(`rm main-cpp`)
 
     t.is(output, expected)
 }
@@ -36,8 +36,8 @@ exports.testBash = async (t, dirpath) => {
 
     let input,expected
     try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
+        expected = await readFile(`${dirpath}/output`)
+        input = await readFile(`${dirpath}/input`)
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
 
@@ -50,13 +50,29 @@ exports.testPython = async (t, dirpath) => {
 
     let input,expected
     try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
+        expected = await readFile(`${dirpath}/output`)
+        input = await readFile(`${dirpath}/input`)
                       .then(input => input.split('\n').join(' '))
     } catch (e) {t.fail(e)}
 
-    let output = await exec(`python3  ${dirpath}/main.py ${input}`);
+    let output = await exec(`python3 ${dirpath}/main.py ${input}`);
     
+    t.is(output, expected)
+}
+
+exports.testRust = async (t, dirpath) => {
+
+    let input,expected
+    try {
+        expected = await readFile(`${dirpath}/output`)
+        input = await readFile(`${dirpath}/input`)
+                      .then(input => input.split('\n').join(' '))
+    } catch (e) {t.fail(e)}
+
+    await exec(`rustc ${dirpath}/main.rs -o main-rs`);
+    let output = await exec(`./main-rs ${input}`)
+    await exec(`rm main-rs`)
+
     t.is(output, expected)
 }
 
