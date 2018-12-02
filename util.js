@@ -1,62 +1,64 @@
 const fs = require('fs')
+const test = require('ava')
 const shell = require('shelljs')
 
-exports.testGo = async (t, dirpath) => {
-    let output = await readOutput(dirpath)
-    let input = await readInput(dirpath)
-    
-    input = input.split('\n').join(' ')
+exports.testGo = dirpath => {
+    test(`${dirpath}/main.go`, async t => {
 
-    let result = shell.exec(`go run ${dirpath}/main.go ${input}`, {silent: true}).stdout
-    if (result !== output) {
-        t.fail(`${result} !== \n${output}`)
-    }
-    t.pass()
+        let output = await readFile(dirpath+"/output")
+        let input = await readFile(dirpath+"/input")
+
+        input = input.split('\n').join(' ')
+
+        let result = shell.exec(`go run ${dirpath}/main.go ${input}`, {silent: true}).stdout
+        if (result !== output) {
+            t.fail(`${result} !== \n${output}`)
+        }
+        t.pass()
+    });
 }
 
-exports.testCpp = async (t, dirpath) => {
-    let output = await readOutput(dirpath)
-    let input = await readInput(dirpath)
+exports.testCpp = dirpath => {
 
-    input = input.split('\n').join(' ')
+    test(`${dirpath}/main.cpp`, async t => {
 
-    let result = shell.exec(
-        `clang++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main && ${dirpath}/main ${input}`, {silent: true}).stdout
+        let output = await readFile(dirpath+"/output")
+        let input = await readFile(dirpath+"/input")
 
-    if (result !== output) {
-        t.fail(`${result} !== \n${output}`)
-    }
-    t.pass()
-}
+        input = input.split('\n').join(' ')
 
-exports.testBash = async (t, dirpath) => {
-    let output = await readOutput(dirpath)
-    let input = await readInput(dirpath)
+        let result = shell.exec(
+            `clang++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main && ${dirpath}/main ${input}`, {silent: true}).stdout
 
-    input = input.split('\n').join(' ')
-
-    let result = shell.exec(`bash  ${dirpath}/main.bash ${input}`, {silent: true}).stdout
-    if (result !== output) {
-        t.fail(`${result} !== \n${output}`)
-    }
-    t.pass()
-}
-
-
-const readInput = (dirpath) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(dirpath + "/input", function (err, data) {
-            if (err) {
-                reject(err)
-            }
-            resolve(data.toString())
-        })
+        if (result !== output) {
+            t.fail(`${result} !== \n${output}`)
+        }
+        t.pass()
     })
 }
 
-const readOutput = (dirpath) => {
+exports.testBash = dirpath => {
+
+    test(`${dirpath}/main.bash`, async t => {
+
+        let output = await readFile(dirpath+"/output")
+        let input = await readFile(dirpath+"/input")
+
+        input = input.split('\n').join(' ')
+
+        let result = shell.exec(`bash  ${dirpath}/main.bash ${input}`, {silent: true}).stdout
+        if (result !== output) {
+            t.fail(`${result} !== \n${output}`)
+        }
+        t.pass()
+
+    });
+}
+
+
+const readFile = (dirpath) => {
     return new Promise((resolve, reject) => {
-        fs.readFile(dirpath + "/output", function (err, data) {
+        fs.readFile(dirpath, function (err, data) {
             if (err) {
                 reject(err)
             }

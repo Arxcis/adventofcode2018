@@ -1,4 +1,3 @@
-import test from 'ava';
 import {
     testGo,
     testCpp,
@@ -6,6 +5,6 @@ import {
 } from '../util'
 
 const dirpath = 'day01-chronal-calibration'
-test(`${dirpath}/main.go`, t => testGo(t, dirpath))
-test(`${dirpath}/main.cpp`, t => testCpp(t, dirpath))
-test(`${dirpath}/main.bash`, t => testBash(t, dirpath))
+testGo(dirpath)
+testCpp(dirpath)
+testBash(dirpath)
