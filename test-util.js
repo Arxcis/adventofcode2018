@@ -1,4 +1,6 @@
 const test = require('ava')
+const fs = require('fs')
+const _exec = require('child_process').exec;
 
 exports.testGo = dirpath => {
     test(`main.go`, async t => {
@@ -55,17 +57,14 @@ exports.testBash = dirpath => {
     });
 }
 
-
-const _exec = require('child_process').exec;
-const exec = (command) => {
-    return new Promise((resolve) => {
-        _exec(command, (err, stdout) => {
+const exec = commands => {
+    return new Promise(resolve => {
+        _exec(commands, (err, stdout) => {
             resolve(stdout)
         });
     })
 }
 
-const fs = require('fs')
 const readFile = (dirpath) => {
     return new Promise((resolve, reject) => {
         fs.readFile(dirpath, function (err, data) {
