@@ -1,6 +1,5 @@
 matrix:
   include:
-    - language: python
-      python: 3.6
+    - language: node_js
       script:
-        - python3 day02-inventory-managment-system/main.py
+        - npm run test
