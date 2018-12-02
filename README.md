@@ -2,7 +2,7 @@
 
 Link: https://adventofcode.com/2018
 
-In this repo we try to solve the daily tasks in as many languages as possible. Pick a language which does not have a solution yet and solve it.
+In this repo we try to solve the daily tasks in as many languages as possible. Pick a language and day which does not have a solution yet and solve it.
 
 
 ### Solution matrix
