@@ -2,8 +2,7 @@
 
 Link: https://adventofcode.com/2018
 
-In this repo we try to solve the daily tasks in as many languages as possible. Pick a language which does not have a solution yet and solve it.
-
+In this repo we try to solve the daily tasks in as many languages as possible. Pick a language and day which does not have a solution yet and solve it.
 
 ### Solution matrix
 
@@ -12,6 +11,9 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | Golang     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | C++        | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Bash       | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+
+### Status tests - 01.12.2018
+[![asciicast](https://asciinema.org/a/ajAsZiFYWPKPUk0LAO45lqbQE.svg)](https://asciinema.org/a/ajAsZiFYWPKPUk0LAO45lqbQE)
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
@@ -43,4 +45,4 @@ $ ./main $(cat input)
 55250
 
 ```
-* Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on adventofcode.com. Use your own input-data to score points there.
+* Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on your adventofcode.com user. Use your own input-data to score points there.
