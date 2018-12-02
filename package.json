@@ -4,8 +4,7 @@
         "test": "ava --verbose"
     },
     "devDependencies": {
-        "ava": "1.0.0-rc.2",
-        "shelljs": "^0.8.3"
+        "ava": "1.0.0-rc.2"
     },
     "dependencies": {}
 }
