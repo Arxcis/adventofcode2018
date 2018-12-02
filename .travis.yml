@@ -1,0 +1,9 @@
+matrix:
+  include:
+    - language: node_js
+      node_js: "node"
+      os: osx
+      before_install:
+        - brew install go gcc bash python
+      script:
+        - npm run test

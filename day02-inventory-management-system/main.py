@@ -28,7 +28,6 @@ def main():
 
     def part2(boxIDList):
 
-
         for idA in boxIDList:
             for idB in boxIDList:
 
