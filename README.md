@@ -43,4 +43,4 @@ $ ./main $(cat input)
 55250
 
 ```
-* Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on adventofcode.com. Use your own input-data to score points there.
+* Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on your adventofcode.com user. Use your own input-data to score points there.
