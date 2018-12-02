@@ -1,7 +1,7 @@
 {
     "name": "adventofcode2018",
     "scripts": {
-        "generate": "node generate-tests.js",
+        "generate": "node generate.js",
         "all": "ava --verbose",
         "bash": "ava --verbose --match='*.bash'",
         "cpp": "ava --verbose --match='*.cpp'",

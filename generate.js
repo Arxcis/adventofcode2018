@@ -2,11 +2,13 @@ const fs = require("fs")
 
 let files = fs.readdirSync(".", { withFileTypes: true })
 let dayDirs = files.filter(file => file.isDirectory())
-                      .filter(dir => /^day/.test(dir.name))
+                   .filter(dir => /^day/.test(dir.name))
 
 
-dayDirs.forEach(folder => {
-    let dayFiles = fs.readdirSync(`${__dirname}/${folder.name}`, { withFileTypes: true })
+dayDirs.forEach(dir => {
+    let abspath = `${__dirname}/${dir.name}`
+
+    let dayFiles = fs.readdirSync(abspath, { withFileTypes: true })
     let mainFiles = dayFiles.filter(file => file.isFile())
                             .filter(file => /^main./.test(file.name))
 
@@ -19,5 +21,6 @@ ${mainFiles.reduce((str, main) => {
     str += `test('${main.name}', async t => await testUtil['${main.name}'](t, dirpath))\n`
     return str
 }, "")}`
-    fs.writeFile(`${__dirname}/${folder.name}/test.js`, testFile, () => console.log(`Generated ${folder.name}/test.js`))
+
+    fs.writeFile(`${abspath}/test.js`, testFile, () => console.log(`Generated ${dir.name}/test.js`))
 })
