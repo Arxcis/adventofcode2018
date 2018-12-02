@@ -2,7 +2,7 @@ const fs = require('fs')
 const _exec = require('child_process').exec
 
 //
-// Interpreted programs
+// Interpreted languages
 //
 /* Go 1.11 */
 exports['main.go'] = makeTest(dirpath => exec(`go run ${dirpath}/main.go $(cat ${dirpath}/input)`))
@@ -14,20 +14,24 @@ exports['main.bash'] = makeTest(dirpath => exec(`bash ${dirpath}/main.bash $(cat
 exports['main.py'] = makeTest(dirpath => exec(`python3 ${dirpath}/main.py $(cat ${dirpath}/input)`))
 
 //
-// Compiled programs
+// Compiled languages
 //
 /* C++ 17 */
 exports['main.cpp'] = makeTest(async dirpath => {
+
     await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main-cpp`)
     let output = await exec(`${dirpath}/main-cpp $(cat ${dirpath}/input)`)
+
     await exec(`rm ${dirpath}/main-cpp`)
     return output;
 })
 
 /* Rust */
 exports['main.rs'] = makeTest(async dirpath => {
+
     await exec(`rustc ${dirpath}/main.rs -o ${dirpath}/main-rs`);
     let output = await exec(`${dirpath}/main-rs  $(cat ${dirpath}/input)`)
+    
     await exec(`rm ${dirpath}/main-rs`)
     return output
 })
