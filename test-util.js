@@ -2,7 +2,7 @@ const fs = require('fs')
 const _exec = require('child_process').exec;
 
 
-exports.testGo = async (t, dirpath) => {
+exports['main.go'] = async (t, dirpath) => {
 
     try { var expected = await readFile(`${dirpath}/output`) } catch (e) { t.fail(e) }
 
@@ -11,7 +11,7 @@ exports.testGo = async (t, dirpath) => {
     t.is(output, expected)
 }
 
-exports.testCpp = async (t, dirpath) => {
+exports['main.cpp'] = async (t, dirpath) => {
 
     try { var expected = await readFile(`${dirpath}/output`) } catch (e) { t.fail(e) }
 
@@ -22,7 +22,7 @@ exports.testCpp = async (t, dirpath) => {
     t.is(output, expected)
 }
 
-exports.testBash = async (t, dirpath) => {
+exports['main.bash'] = async (t, dirpath) => {
 
     try { var expected = await readFile(`${dirpath}/output`) } catch (e) { t.fail(e) }
 
@@ -31,7 +31,7 @@ exports.testBash = async (t, dirpath) => {
     t.is(output, expected)
 }
 
-exports.testPython = async (t, dirpath) => {
+exports['main.py'] = async (t, dirpath) => {
 
     try { var expected = await readFile(`${dirpath}/output`) } catch (e) { t.fail(e) }
 
@@ -40,7 +40,7 @@ exports.testPython = async (t, dirpath) => {
     t.is(output, expected)
 }
 
-exports.testRust = async (t, dirpath) => {
+exports['main.rs'] = async (t, dirpath) => {
 
     try { var expected = await readFile(`${dirpath}/output`) } catch (e) { t.fail(e) }
 

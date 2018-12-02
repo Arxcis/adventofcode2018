@@ -6,4 +6,5 @@ env:
 before_install:
   - brew install bash rust
 script:
-  - npm run test
+  - npm run generate
+  - npm run all
