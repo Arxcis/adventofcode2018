@@ -1,28 +1,6 @@
 const fs = require('fs')
 const shell = require('shelljs')
 
-const readInput = (dirpath) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(dirpath + "/input", function (err, data) {
-            if (err) {
-                reject(err)
-            }
-            resolve(data.toString())
-        })
-    })
-}
-
-const readOutput = (dirpath) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(dirpath + "/output", function (err, data) {
-            if (err) {
-                reject(err)
-            }
-            resolve(data.toString())
-        })
-    })
-}
-
 exports.testGo = async (t, dirpath) => {
     let output = await readOutput(dirpath)
     let input = await readInput(dirpath)
@@ -62,4 +40,27 @@ exports.testBash = async (t, dirpath) => {
         t.fail(`${result} !== \n${output}`)
     }
     t.pass()
+}
+
+
+const readInput = (dirpath) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(dirpath + "/input", function (err, data) {
+            if (err) {
+                reject(err)
+            }
+            resolve(data.toString())
+        })
+    })
+}
+
+const readOutput = (dirpath) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(dirpath + "/output", function (err, data) {
+            if (err) {
+                reject(err)
+            }
+            resolve(data.toString())
+        })
+    })
 }
