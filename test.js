@@ -28,7 +28,7 @@ exports.testCpp = dirpath => {
         input = input.split('\n').join(' ')
 
         let result = shell.exec(
-            `clang++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main && ${dirpath}/main ${input}`, {silent: true}).stdout
+            `clang++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main && ${dirpath}/main ${input} && rm ${dirpath}/main`, {silent: true}).stdout
 
         if (result !== output) {
             t.fail(`${result} !== \n${output}`)
