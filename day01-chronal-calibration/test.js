@@ -2,9 +2,9 @@ import {
     testGo,
     testCpp,
     testBash,
-} from '../test'
+} from '../test-util'
 
-const dirpath = 'day01-chronal-calibration'
+const dirpath = __dirname
 testGo(dirpath)
 testCpp(dirpath)
 testBash(dirpath)

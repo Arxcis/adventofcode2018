@@ -3,7 +3,7 @@ const test = require('ava')
 const shell = require('shelljs')
 
 exports.testGo = dirpath => {
-    test(`${dirpath}/main.go`, async t => {
+    test('main.go', async t => {
 
         let output = await readFile(dirpath+"/output")
         let input = await readFile(dirpath+"/input")
@@ -20,15 +20,16 @@ exports.testGo = dirpath => {
 
 exports.testCpp = dirpath => {
 
-    test(`${dirpath}/main.cpp`, async t => {
+    test('main.cpp', async t => {
 
         let output = await readFile(dirpath+"/output")
         let input = await readFile(dirpath+"/input")
 
         input = input.split('\n').join(' ')
 
-        let result = shell.exec(
-            `clang++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main && ${dirpath}/main ${input} && rm ${dirpath}/main`, {silent: true}).stdout
+        shell.exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main`, {silent: true})
+        let result = shell.exec(`${dirpath}/main ${input}`, {silent: true}).stdout
+        shell.rm(`${dirpath}/main`)
 
         if (result !== output) {
             t.fail(`${result} !== \n${output}`)
@@ -39,7 +40,7 @@ exports.testCpp = dirpath => {
 
 exports.testBash = dirpath => {
 
-    test(`${dirpath}/main.bash`, async t => {
+    test('main.bash', async t => {
 
         let output = await readFile(dirpath+"/output")
         let input = await readFile(dirpath+"/input")
