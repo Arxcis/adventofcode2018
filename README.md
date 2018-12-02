@@ -29,20 +29,24 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
 * Each program should expect the input as a list of command-line arguments:
 * Every folder contains a `input`-file with testdata you can use.
 ```
-$ ./main $(cat input)
+$ day01/main $(cat day01/input)
 ```
 ...expands to
 ```
-$ ./main +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
+$ day01/main +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
 ```
 
 **Output**
 
-Each program is expected to output two answers. One for `part1` and one for `part2`:
+Each program's output(stdout) is expected to match the `output`-file of each folder:
 ```
-$ ./main $(cat input)
+$ day01/main $(cat day01/input)
 408
 55250
-
+```
+.. matches `day01/output`
+```
+408
+55250
 ```
 * Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on your adventofcode.com user. Use your own input-data to score points there.
