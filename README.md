@@ -49,3 +49,53 @@ $ cat day01/input | ./day01/main
 55250
 ```
 * Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on your adventofcode.com user. Use your own input-data to score points there.
+
+### Testing
+
+**Test all programs**
+```
+$ npm run all
+
+  ✖ No tests found in day03-no-matter-how-you-slice-it/test.js
+  ✔ day01-chronal-calibration › test › main.go (574ms)
+  ✔ day02-inventory-management-system › test › main.go (593ms)
+  ✔ day02-inventory-management-system › test › main.py (663ms)
+  ✔ day01-chronal-calibration › test › main.rs (1.4s)
+  ✔ day01-chronal-calibration › test › main.cpp (1.7s)
+
+  5 tests passed
+
+```
+
+**Test specific language**
+```
+ npm run go
+
+  ✔ day01-chronal-calibration › test › main.go (381ms)
+  ✔ day02-inventory-management-system › test › main.go (418ms)
+
+  2 tests passed
+
+```
+
+**Test specific day**
+```
+$ npm run all day01-chronal-calibration/
+
+  ✔ main.go (457ms)
+  ✔ main.rs (1.4s)
+  ✔ main.cpp (1.8s)
+
+  3 tests passed
+
+```
+
+**Test specific day AND specific language**
+```
+$ npm run py day02-inventory-management-system/
+
+  ✔ main.py (207ms)
+
+  1 test passed
+
+```
