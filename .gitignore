@@ -21,3 +21,10 @@ test.js
 
 ## npm
 node_modules/
+
+## rust files
+**/target
+**/*.rs.bk
+
+## macOS
+.DS_Store

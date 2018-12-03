@@ -5,13 +5,13 @@ const _exec = require('child_process').exec
 // Interpreted languages
 //
 /* Go 1.11 */
-exports['main.go'] = makeTest(dirpath => exec(`go run ${dirpath}/main.go $(cat ${dirpath}/input)`))
+exports['main.go'] = makeTest(dirpath => exec(`cat ${dirpath}/input | go run ${dirpath}/main.go`))
 
 /* Bash 4.4 */
-exports['main.bash'] = makeTest(dirpath => exec(`bash ${dirpath}/main.bash $(cat ${dirpath}/input)`))
+exports['main.bash'] = makeTest(dirpath => exec(`cat ${dirpath}/input | ${dirpath}/main.bash`))
 
 /* Python 3.6 */
-exports['main.py'] = makeTest(dirpath => exec(`python3 ${dirpath}/main.py $(cat ${dirpath}/input)`))
+exports['main.py'] = makeTest(dirpath => exec(`cat ${dirpath}/input | python3 ${dirpath}/main.py`))
 
 //
 // Compiled languages
@@ -20,7 +20,7 @@ exports['main.py'] = makeTest(dirpath => exec(`python3 ${dirpath}/main.py $(cat 
 exports['main.cpp'] = makeTest(async dirpath => {
 
     await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main-cpp`)
-    let output = await exec(`${dirpath}/main-cpp $(cat ${dirpath}/input)`)
+    let output = await exec(`cat ${dirpath}/input | ${dirpath}/main-cpp`)
 
     await exec(`rm ${dirpath}/main-cpp`)
     return output;
@@ -29,10 +29,10 @@ exports['main.cpp'] = makeTest(async dirpath => {
 /* Rust */
 exports['main.rs'] = makeTest(async dirpath => {
 
-    await exec(`rustc ${dirpath}/main.rs -o ${dirpath}/main-rs`);
-    let output = await exec(`${dirpath}/main-rs  $(cat ${dirpath}/input)`)
-    
+    await exec(`rustc ${dirpath}/main.rs -o ${dirpath}/main-rs -C debuginfo=0 -C opt-level=3`);
+    let output = await exec(`cat ${dirpath}/input | ${dirpath}/main-rs`)
     await exec(`rm ${dirpath}/main-rs`)
+
     return output
 })
 
