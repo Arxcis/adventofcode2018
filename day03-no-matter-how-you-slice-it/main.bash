@@ -57,9 +57,6 @@ for (( i=0; i<$WIDTH; i++ )); do
         CLAIM_HITS=0
         for (( k=0; k<$NUM_CLAIMS; k++ )); do
 
-
-
-            # FIXME change to use map
             if [[ $i -ge ${CLAIMS_MAP[$k,x]} ]] && 
                [[ $j -ge ${CLAIMS_MAP[$k,y]} ]] && 
                [[ $i -lt $(( ${CLAIMS_MAP[$k,x]} + ${CLAIMS_MAP[$k,w]} )) ]] &&
@@ -68,12 +65,11 @@ for (( i=0; i<$WIDTH; i++ )); do
                 ((CLAIM_HITS++))
 
                 if [[ $CLAIM_HITS -eq 2 ]]; then
-                    echo "($i,$j) $CLAIM --> ${CLAIMS_MAP[$k,x]} ${CLAIMS_MAP[$k,y]} ${CLAIMS_MAP[$k,y]} ${CLAIMS_MAP[$k,h]} [$CLAIM_HITS]"
+                    echo "($i,$j) $CLAIM --> ${CLAIMS_MAP[$k,x]} ${CLAIMS_MAP[$k,y]} ${CLAIMS_MAP[$k,y]} ${CLAIMS_MAP[$k,h]} [$CLAIM_HITS] -> $k"
                     break
                 fi
 
             fi
-
 
         done
 
