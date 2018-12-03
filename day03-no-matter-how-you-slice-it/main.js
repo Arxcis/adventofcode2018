@@ -54,3 +54,28 @@ for (let y = 0; y < fabricHeight; ++y) {
 }
 
 console.log(count)
+
+
+//
+// Part 2
+//
+// Find a claim which is not covered by any other claim
+let foundId = 0
+for (let c = 0; c < claims.length && !foundId; ++c) {
+    let claim = claims[c]
+    let exlusiveCount = 0
+    for (let y = 0; y < claim.height; ++y) {
+        for (let x = 0; x < claim.width; ++x) {
+            if (fabric[claim.top+y][claim.left+x] === 1) {
+                exlusiveCount += 1
+            }
+        }
+    }
+
+    if (exlusiveCount === claim.height*claim.width) {
+        foundId = claim.id
+    }
+}
+
+console.log(foundId)
+
