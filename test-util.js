@@ -5,10 +5,10 @@ const _exec = require('child_process').exec
 // Interpreted languages
 //
 /* Go 1.11 */
-exports['main.go'] = makeTest(dirpath => exec(`go run ${dirpath}/main.go $(cat ${dirpath}/input)`))
+exports['main.go'] = makeTest(dirpath => exec(`cat ${dirpath}/input | go run ${dirpath}/main.go`))
 
 /* Bash 4.4 */
-exports['main.bash'] = makeTest(dirpath => exec(`bash ${dirpath}/main.bash $(cat ${dirpath}/input)`))
+exports['main.bash'] = makeTest(dirpath => exec(`cat ${dirpath}/input | ${dirpath}/main.bash`))
 
 /* Python 3.6 */
 exports['main.py'] = makeTest(dirpath => exec(`python3 ${dirpath}/main.py $(cat ${dirpath}/input)`))
