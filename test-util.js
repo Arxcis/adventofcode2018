@@ -8,13 +8,15 @@ const main_bash = 'main.bash'
 const main_py = 'main.py'
 const main_cpp = 'main.cpp'
 const main_rs = 'main.rs'
+const main_js = 'main.js'
 
 exports.enabledFilenames = [
     main_go,
     main_py,
     main_cpp,
     main_rs,
-    // main_bash // enable to generate test for bash locally TODO do something smarter than commenting out
+    main_js,
+    main_bash
 ]
 
 //
@@ -28,6 +30,9 @@ exports[main_bash] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | ${d
 
 /* Python 3.6 */
 exports[main_py] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | python3 ${dirpath}/${main_py}`))
+
+/* Node 11 */
+exports[main_js] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | node ${dirpath}/${main_js}`))
 
 //
 // Compiled languages

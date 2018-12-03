@@ -17,6 +17,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | Bash     | x  | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Python3  |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Rust     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | Nodejs   |    |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
