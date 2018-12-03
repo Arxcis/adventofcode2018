@@ -13,8 +13,8 @@
         "ava": "1.0.0-rc.2"
     },
     "ava": {
-    	"files": [
-    		"./**/test.js"
-    	]
+        "files": [
+            "./**/test.js"
+        ]
     }
 }
