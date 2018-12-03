@@ -4,10 +4,11 @@ Link: https://adventofcode.com/2018
 
 In this repo we try to solve the daily tasks in as many languages as possible. Pick a language and day which does not have a solution yet and solve it.
 
+### Travis CI
+
+[![Build Status](https://travis-ci.org/Arxcis/adventofcode2018.svg?branch=master)](https://travis-ci.org/Arxcis/adventofcode2018) (Click for details)
 
 ### Solution matrix
-
-[![Build Status](https://travis-ci.org/Arxcis/adventofcode2018.svg?branch=master)](https://travis-ci.org/Arxcis/adventofcode2018)
 
  | Language   | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
  |------------|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
