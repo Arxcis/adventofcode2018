@@ -14,7 +14,6 @@ exports.enabledFilenames = [
     main_py,
     main_cpp,
     main_rs,
-    main_bash
 ]
 
 //
@@ -57,7 +56,7 @@ exports[main_rs] = makeTest(async dirpath => {
 function makeTest(producer) {
     return async (t, dirpath) => {
         try { 
-            var expected = await readFile(`${dirpath}/${outputFile}`) 
+            var expected = await readFile(`${dirpath}/${outputFile}`)
         } catch (e) { 
             t.fail(e) 
         }
