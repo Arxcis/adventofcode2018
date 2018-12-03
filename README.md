@@ -52,6 +52,8 @@ $ cat day01/input | ./day01/main
 
 ### Testing
 
+For all available test commands see `package.json`
+
 **Test all programs**
 ```
 $ npm run all
