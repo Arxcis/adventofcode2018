@@ -7,7 +7,8 @@
         "cpp": "ava --verbose --match='*.cpp'",
         "go": "ava --verbose --match='*.go'",
         "py": "ava --verbose --match='*.py'",
-        "rs": "ava --verbose --match='*.rs'"
+        "rs": "ava --verbose --match='*.rs'",
+        "js": "ava --verbose --match='*.js'"
     },
     "devDependencies": {
         "ava": "1.0.0-rc.2"
