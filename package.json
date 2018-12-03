@@ -1,18 +1,20 @@
 {
     "name": "adventofcode2018",
     "scripts": {
-        "test": "ava --verbose",
-        "test-bash": "ava --verbose --match='*.bash'",
-        "test-cpp": "ava --verbose --match='*.cpp'",
-        "test-go": "ava --verbose --match='*.go'",
-        "test-py": "ava --verbose --match='*.py'"
+        "generate": "node generate.js",
+        "all": "ava --verbose",
+        "bash": "ava --verbose --match='*.bash'",
+        "cpp": "ava --verbose --match='*.cpp'",
+        "go": "ava --verbose --match='*.go'",
+        "py": "ava --verbose --match='*.py'",
+        "rust": "ava --verbose --match='*.rs'"
     },
     "devDependencies": {
         "ava": "1.0.0-rc.2"
     },
     "ava": {
-    	"files": [
-    		"./**/test.js"
-    	]
+        "files": [
+            "./**/test.js"
+        ]
     }
 }
