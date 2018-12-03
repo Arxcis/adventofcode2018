@@ -29,21 +29,17 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
 * Every solution-file is named 'main' (e.g main.py, main.go, main.ru, main.js, main.cs, ....)
 
 ### Input
-* Each program should expect the input as a list of command-line arguments:
+* Each program should expect the input from `stdin`
 * Every folder contains a `input`-file with testdata you can use.
 ```
-$ ./day01/main $(cat day01/input)
-```
-...expands to
-```
-$ ./day01/main +10 -3 -17 +4 +23 +16 -7 -30 +29 -19 +18 -3 ...
+$ cat day01/input | ./day01/main
 ```
 
 ### Output
 
 Each program's output(stdout) is expected to match the `output`-file of each folder:
 ```
-$ day01/main $(cat day01/input)
+$ cat day01/input | ./day01/main
 408
 55250
 ```
