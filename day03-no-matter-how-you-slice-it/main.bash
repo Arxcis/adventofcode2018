@@ -1,23 +1,15 @@
-# PSEUDOCODE
-: '
-
-for each pair i,j in 0..WIDTH,0..HEIGHT
-  for each claim
-    if claim involves i,j
-      store that we found another claim 
-    if two claims found
-      break
-  if found two claims
-    increase overlap count
-
-
-'
 CLAIMS_RAW="$@"
 declare -A CLAIMS_MAP
 
 # build claim datastructure
-# ( x y w h )
-# (using fake assoc array https://stackoverflow.com/questions/11233825/multi-dimensional-arrays-in-bash)
+# [0,x]
+# [0,y]
+# [0,w]
+# [0,h]
+# [1,x]
+# ...
+# (using map to fake two-dimentional array: 
+#  https://stackoverflow.com/questions/11233825/multi-dimensional-arrays-in-bash)
 
 CLAIMS_COUNTER=-1
 while read -r CLAIM; do
@@ -41,6 +33,19 @@ while read -r CLAIM; do
 
 done <<< "$CLAIMS_RAW"
 
+
+# PSEUDOCODE
+: '
+
+for each pair i,j in 0..WIDTH,0..HEIGHT
+  for each claim
+    if claim involves i,j
+      store that we found another claim 
+    if two claims found
+      break
+  if found two claims
+    increase overlap count
+'
 
 
 NUM_CLAIMS=$CLAIMS_COUNTER
