@@ -20,7 +20,7 @@ exports['main.py'] = makeTest(dirpath => exec(`python3 ${dirpath}/main.py $(cat 
 exports['main.cpp'] = makeTest(async dirpath => {
 
     await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main-cpp`)
-    let output = await exec(`${dirpath}/main-cpp $(cat ${dirpath}/input)`)
+    let output = await exec(`cat ${dirpath}/input | ${dirpath}/main-cpp`)
 
     await exec(`rm ${dirpath}/main-cpp`)
     return output;

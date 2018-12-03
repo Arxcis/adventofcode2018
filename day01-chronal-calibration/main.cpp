@@ -5,15 +5,14 @@
 
 int main(int argc, char** argv)
 {
-    if (argc < 2) {
-        std::cerr << "Missing input\n";
-        return 1;
+    std::vector<std::string> lines{};
+    for (std::string line; std::getline(std::cin, line);) {
+        lines.push_back(line);
     }
 
     std::string line;
     std::vector<int> input;
-    for (int i = 1; i < argc; i++) {
-        line = argv[i];
+    for (const auto& line: lines) {
         input.push_back(atoi(line.c_str()));
     }
 
