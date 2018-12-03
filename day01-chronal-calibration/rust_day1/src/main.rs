@@ -1,17 +1,13 @@
 use std::{
-    io::{
-        BufReader, prelude::*
-    },
-    fs::File,
+    io::{self, prelude::*},
     collections::HashSet,
 };
 
-fn puzzle_1(state_changes: &Vec<i32>) {
-    let ans: i32 = state_changes.iter().sum();
-    println!("The resulting frequency is: {}", ans);
+fn puzzle_1(state_changes: &Vec<i32>) -> i32 {
+    state_changes.iter().sum()
 }
 
-fn puzzle_2(state_changes: &Vec<i32>) {
+fn puzzle_2(state_changes: &Vec<i32>) -> i32{
     let mut set = HashSet::new();
     let mut state = 0;
 
@@ -21,14 +17,11 @@ fn puzzle_2(state_changes: &Vec<i32>) {
         }
         state += change;
     }
-    println!("The first frequency your device reaches twice is: {}", state);
+    state
 }
 
-fn parse_file(name: &str) -> std::io::Result<Vec<i32>> {
-    let file = File::open(name)?;
-    let reader = BufReader::new(file);
-    
-    //converts the file to a vec of i32
+fn parse_file(reader: impl BufRead) -> std::io::Result<Vec<i32>> {
+    //converts input in type of a file or stdin into an array of vec
     Ok(reader.lines()
         .map(|l| {
             let s = match l{
@@ -46,14 +39,51 @@ fn parse_file(name: &str) -> std::io::Result<Vec<i32>> {
                 }
             }
         })
-        .collect())
+       .collect())
 }
 
 fn main() ->std::io::Result<()> {
-    let state_changes = parse_file("../input")?;
-    puzzle_1(&state_changes);
-    puzzle_2(&state_changes);
+    let stdin_input = io::stdin();
+    let input = stdin_input.lock();
+    let state_changes = parse_file(input)?;
+    println!("{}", puzzle_1(&state_changes));
+    println!("{}", puzzle_2(&state_changes));
     
     Ok(())
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{
+        fs::File,
+        io::BufReader,
+    };
+
+    fn tester(i: usize) -> (i32, Vec<i32>) {
+        let file = File::open("../input").unwrap();
+        let reader = BufReader::new(file);
+        let state_changes = parse_file(reader).unwrap();
+        let output_file = File::open("../output").unwrap();;
+        let ans = BufReader::new(output_file)
+                .lines()
+                .skip(i)
+                .next()
+                .unwrap()
+                .unwrap();
+        let expected = i32::from_str_radix(&ans, 10).unwrap();
+        (expected, state_changes)
+    }
+        
+    #[test]
+    fn puzzle_tester_1() {
+        let (expected, state_changes) = tester(0);
+        assert_eq!(expected, puzzle_1(&state_changes));
+    }
+    
+    #[test]
+    fn puzzle_tester_2() {
+        let (expected, state_changes) = tester(1);
+        assert_eq!(expected, puzzle_2(&state_changes));
+    }
+}
