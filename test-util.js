@@ -16,7 +16,7 @@ exports.enabledFilenames = [
     main_cpp,
     main_rs,
     main_js,
-    // main_bash // enable to generate test for bash locally TODO do something smarter than commenting out
+    main_bash
 ]
 
 //

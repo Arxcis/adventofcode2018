@@ -8,4 +8,9 @@ before_install:
   - brew install rust
 script:
   - npm run generate
-  - npm run all
+  - npm run cpp
+  - npm run go
+  - npm run py
+  - npm run rs
+  - npm run js
+
