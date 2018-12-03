@@ -29,10 +29,10 @@ exports['main.cpp'] = makeTest(async dirpath => {
 /* Rust */
 exports['main.rs'] = makeTest(async dirpath => {
 
-    await exec(`rustc ${dirpath}/main.rs -o ${dirpath}/main-rs`);
-    let output = await exec(`${dirpath}/main-rs  $(cat ${dirpath}/input)`)
-    
+    await exec(`rustc ${dirpath}/main.rs -o ${dirpath}/main-rs -C debuginfo=0 -C opt-level=3`);
+    let output = await exec(`cat ${dirpath}/input | ${dirpath}/main-rs`)
     await exec(`rm ${dirpath}/main-rs`)
+
     return output
 })
 
