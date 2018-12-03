@@ -1,13 +1,12 @@
 #!/usr/local/bin/python3
 
 import sys
+import fileinput
 
 def main():
-    if len(sys.argv) < 2:
-        print("Missing input")
-        sys.exit(1)
-
-    boxIDList = sys.argv[1:]
+    boxIDList = []
+    for line in fileinput.input():
+        boxIDList.append(line.replace("\n", ""))
 
     def part1(boxIDList):
 

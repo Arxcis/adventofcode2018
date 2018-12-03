@@ -11,7 +11,7 @@ exports['main.go'] = makeTest(dirpath => exec(`cat ${dirpath}/input | go run ${d
 exports['main.bash'] = makeTest(dirpath => exec(`cat ${dirpath}/input | ${dirpath}/main.bash`))
 
 /* Python 3.6 */
-exports['main.py'] = makeTest(dirpath => exec(`python3 ${dirpath}/main.py $(cat ${dirpath}/input)`))
+exports['main.py'] = makeTest(dirpath => exec(`cat ${dirpath}/input | python3 ${dirpath}/main.py`))
 
 //
 // Compiled languages
