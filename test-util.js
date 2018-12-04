@@ -26,7 +26,7 @@ exports.enabledFilenames = [
 exports[main_go] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | go run ${dirpath}/${main_go}`))
 
 /* Bash 4.4 */
-exports[main_bash] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${main_bash}`))
+exports[main_bash] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | bash ${dirpath}/${main_bash}`))
 
 /* Python 3.6 */
 exports[main_py] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | python3 ${dirpath}/${main_py}`))
