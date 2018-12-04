@@ -10,7 +10,9 @@
 declare -A FABRIC_MAP
 declare -A CLAIM_MAP
 CLAIM_COUNTER=-1
+OVERLAP_COUNT=0
 while read -r CLAIM; do
+
 
     ((CLAIM_COUNTER++))
 
@@ -34,27 +36,23 @@ while read -r CLAIM; do
     CLAIM_MAP[$CLAIM_COUNTER,x2]=$CLAIM_XW
     CLAIM_MAP[$CLAIM_COUNTER,y2]=$CLAIM_YH
 
-    # "paint" claim on fabric. 
-    # first time seen -> 1
-    # rest -> X (overlap)
+    # "paint" claim on fabric, while counting overlaps
     for (( i=$CLAIM_X; i<$CLAIM_XW; i++ )); do
         for (( j=$CLAIM_Y; j<$CLAIM_YH; j++ )); do
-            if [[ ${FABRIC_MAP[$i,$j]+_} ]]; then
-                FABRIC_MAP[$i,$j]=X
-            else
-                FABRIC_MAP[$i,$j]=1
-            fi
+            case ${FABRIC_MAP[$i,$j]} in
+                "")
+                    FABRIC_MAP[$i,$j]=1
+                    ;;
+                1)
+                    FABRIC_MAP[$i,$j]=X
+                    ((OVERLAP_COUNT++))
+                    ;;
+                X)
+                    ;;
+            esac
         done
     done
 
-done
-
-# count overlaps
-OVERLAP_COUNT=0
-for DOT in ${FABRIC_MAP[@]}; do
-    if [[ $DOT -eq X ]]; then
-        ((OVERLAP_COUNT++))
-    fi
 done
 
 echo $OVERLAP_COUNT
