@@ -18,13 +18,14 @@ const exec = commands => {
     return new Promise((resolve, reject) => {
         console.log(commands)
         _exec(commands, (err, stdout) => {
+            console.log(stdout)
             if (err) {
                 reject(err)
+            } else {
+                resolve(stdout)
             }
-            console.log(stdout)
-            resolve(stdout)
         });
     })
 }
 
-main().catch(err => {throw err})
+main().catch(err => {process.exit(1)})
