@@ -22,12 +22,6 @@ def main():
     currentFrequency = 0
     currentFrequencyVisited = {}
 
-    while True:
-        for change in frequencyChanges:
-            currentFrequency += int(change)
-            currentFrequencyVisited[currentFrequency] = 1
-
-
 
 if __name__ == "__main__":
     main()
