@@ -1,0 +1,6 @@
+[package]
+name = "day1_all"
+version = "0.1.0"
+authors = ["Meltinglava <meltinglavaoutland@gmail.com>"]
+
+[dependencies]

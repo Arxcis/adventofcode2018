@@ -1,4 +1,10 @@
+/**
+ * Generate test-files, one for each day:
+ *      dat01/test.js, day02/test.js
+ */
 const fs = require("fs")
+const {enabledFilenames} = require("./test-util.js")
+
 
 let files = fs.readdirSync(".", { withFileTypes: true })
 let dayDirs = files.filter(file => file.isDirectory())
@@ -10,7 +16,6 @@ dayDirs.forEach(dir => {
 
     let dayFiles = fs.readdirSync(abspath, { withFileTypes: true })
     let mainFiles = dayFiles.filter(file => file.isFile())
-                            .filter(file => /^main./.test(file.name))
 
     let testFile = `\
 import test from 'ava'
@@ -18,7 +23,10 @@ import testUtil from '../test-util'
 const dirpath = __dirname
 
 ${mainFiles.reduce((str, main) => {
-    str += `test('${main.name}', async t => await testUtil['${main.name}'](t, dirpath))\n`
+
+    if (enabledFilenames.some(name => name === main.name)) {
+        str += `test('${main.name}', async t => await testUtil['${main.name}'](t, dirpath))\n`
+    }
     return str
 }, "")}`
 

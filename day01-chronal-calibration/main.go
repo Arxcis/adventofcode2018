@@ -4,16 +4,18 @@ import (
     "os"
     "strconv"
     "fmt"
+    "bufio"
 )
 
 func main() {
     //
     // Read args values into integer array
     //
-    if len(os.Args) < 2 {
-        panic("Missing input")
+    args := make([]string, 0)
+    s := bufio.NewScanner(os.Stdin)
+    for s.Scan() {
+        args = append(args, s.Text())
     }
-    args := os.Args[1:]
 
     frequencyChanges := make([]int, len(args))
     for i, changeStr := range args { 

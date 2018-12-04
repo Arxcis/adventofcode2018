@@ -1,10 +1,20 @@
+#!/bin/bash
+
+# read input from stdin
+INPUT=()
+while read LINE; do
+    INPUT+=($LINE)
+done
+
 # PART 1
 
 # answer is eq to these two multiplied
 FIRST_NUM=0
 SECOND_NUM=0
 
-for ID in "$@"; do
+
+
+for ID in ${INPUT[@]}; do
 
     unset COUNT
     declare -A COUNT
@@ -71,7 +81,7 @@ echo "$(($FIRST_NUM * $SECOND_NUM ))"
 
 
 SOLUTION_FOUND=false
-IDS=("$@")
+IDS=(${INPUT[@]})
 
 for (( i=0; i<${#IDS[@]}; i++ )); do
 
