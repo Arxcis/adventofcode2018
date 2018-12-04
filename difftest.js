@@ -16,9 +16,9 @@ const main = async () => {
 
 const exec = commands => {
     return new Promise((resolve, reject) => {
-        //console.log(commands)
+        console.log(commands)
         _exec(commands, (err, stdout) => {
-         //   console.log(stdout)
+            console.log(stdout)
             if (err) {
                 reject(err)
             } else {
