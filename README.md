@@ -17,6 +17,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | Bash     | x  | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Python3  |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Rust     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | Nodejs   |    |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
@@ -51,6 +52,8 @@ $ cat day01/input | ./day01/main
 * Note: Everyone receives unique input-data on adventofcode.com. The correct answer in this repo will not be the correct answer on your adventofcode.com user. Use your own input-data to score points there.
 
 ### Testing
+
+For all available test commands see `package.json`
 
 **Test all programs**
 ```

@@ -1,13 +1,18 @@
 #!/bin/bash
 
+# read input from stdin
+INPUT=()
+while read LINE; do
+    INPUT+=($LINE)
+done
+
 # PART 1
 
 RESULT=0
-INPUT="$@"
 
 # add every freq in input to RESULT
-for var in $INPUT; do
-    RESULT=$(($RESULT + $var))
+for VAR in ${INPUT[@]}; do
+    RESULT=$(($RESULT + $VAR))
 done
 
 echo $RESULT
@@ -18,7 +23,6 @@ echo $RESULT
 
 declare -A SEEN             # Map of seen frequencies (used as set)
 CURRENT=0                   # current freq
-INPUT=("$@")                # the input as an array
 INPUT_LENGTH=${#INPUT[@]}   # the length of the input array (stored for readability)
 INPUT_INDEX=0               # Our current index in the input array
 
