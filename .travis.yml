@@ -7,10 +7,5 @@ before_install:
   - brew install bash
   - brew install rust
 script:
-  - npm run generate
-  - npm run cpp
-  - npm run go
-  - npm run py
-  - npm run rs
-  - npm run js
+  - node difftest.js
 
