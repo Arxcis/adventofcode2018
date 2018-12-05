@@ -16,7 +16,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  | C++      | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Bash     | x  | x  | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Python   |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
- | Rust     | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | Rust     | x  |  x |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Nodejs   |    |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
 ### General
@@ -54,6 +54,33 @@ $ cat day01/input | day01/main
 ### Testing
 
 For all available test commands see `package.json`
+
+**Install node and do npm install**
+
+Get the latest node-version using nvm (https://github.com/creationix/nvm)
+```
+$ node -v
+v11.3.0
+
+$ npm -v
+6.4.1
+
+$npm install
+.... installing packages
+```
+
+
+**Generate tests for all solutions**
+```
+$ npm run generate
+
+Generated day01-chronal-calibration/test.js
+Generated day02-inventory-management-system/test.js
+Generated day03-no-matter-how-you-slice-it/test.js
+Generated day04-respose-record/test.js
+Generated day05-alchemical-reduction/test.js
+```
+Re-run everytime you add a new file
 
 **Test all programs**
 ```
