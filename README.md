@@ -68,6 +68,7 @@ Generated day03-no-matter-how-you-slice-it/test.js
 Generated day04-respose-record/test.js
 Generated day05-alchemical-reduction/test.js
 ```
+Re-run everytime you add a new file
 
 **Test all programs**
 ```
