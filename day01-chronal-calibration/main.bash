@@ -2,7 +2,7 @@
 
 # read input from stdin
 input=()
-while read line; do
+while read -r line; do
     input+=($line)
 done
 
@@ -11,8 +11,8 @@ done
 result=0
 
 # add every freq in input to RESULT
-for freq in ${input[@]}; do
-    result=$(($result + $freq))
+for freq in "${input[@]}"; do
+    result=$((result + freq))
 done
 
 echo $result
@@ -29,7 +29,7 @@ input_index=0               # Our current index in the input array
 while true; do
 
     # if already seen, break. we're done
-    if [[ -v seen[$current] ]]; then
+    if [[ ${seen[$current]+_} ]]; then
         break
     fi
 
