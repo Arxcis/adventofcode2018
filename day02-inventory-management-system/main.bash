@@ -2,7 +2,7 @@
 
 # read input from stdin
 input=()
-while read line; do
+while read -r line; do
     input+=($line)
 done
 
@@ -13,7 +13,7 @@ first_num=0
 second_num=0
 
 
-for id in ${input[@]}; do
+for id in "${input[@]}"; do
 
     unset count
     declare -A count
@@ -24,7 +24,7 @@ for id in ${input[@]}; do
         # update count map
         # - if not seen yet -> make new entry with value 1
         # - if seen before -> increment
-        if [ ${count[$letter]+_} ]; then
+        if [ "${count[$letter]+_}" ]; then
             count[$letter]=$(( ${count[$letter]} + 1 ))
         else
             count[$letter]=1
@@ -59,7 +59,7 @@ for id in ${input[@]}; do
 
 done
 
-echo "$(($first_num * $second_num ))"
+echo "$(( first_num * second_num ))"
 
 
 # PART 2
@@ -94,7 +94,7 @@ for (( i=0; i<${#ids[@]}; i++ )); do
     id1=${ids[$i]}
 
     # compare ID1 to every id coming after it (as ID2)
-    for (( j=$(( $i + 1 )); j<${#ids[@]}; j++ )); do
+    for (( j=$(( i + 1 )); j<${#ids[@]}; j++ )); do
 
         id2=${ids[$j]}
 
@@ -106,7 +106,7 @@ for (( i=0; i<${#ids[@]}; i++ )); do
             letter1="${id1:$k:1}"
             letter2="${id2:$k:1}"
 
-            if [[ $letter1 != $letter2 ]]; then
+            if [[ $letter1 != "$letter2" ]]; then
                 ((num_diff++))
                 latest_diff_pos=$k
             fi
@@ -117,7 +117,7 @@ for (( i=0; i<${#ids[@]}; i++ )); do
 
             # build answer by removing different character
             left_answer_substr=${id1:0:$latest_diff_pos}
-            right_answer_substr=${id1:$(( $latest_diff_pos + 1)):${#id1}}
+            right_answer_substr=${id1:$(( latest_diff_pos + 1)):${#id1}}
 
             echo "$left_answer_substr$right_answer_substr"
             solution_found=true
