@@ -1,66 +1,65 @@
 #!/bin/bash
 
 # read input from stdin
-INPUT=()
-while read LINE; do
-    INPUT+=($LINE)
+input=()
+while read line; do
+    input+=($line)
 done
 
 # PART 1
 
 # answer is eq to these two multiplied
-FIRST_NUM=0
-SECOND_NUM=0
+first_num=0
+second_num=0
 
 
+for id in ${input[@]}; do
 
-for ID in ${INPUT[@]}; do
+    unset count
+    declare -A count
+    for (( i=0; i<${#id}; i++ )); do
 
-    unset COUNT
-    declare -A COUNT
-    for (( i=0; i<${#ID}; i++ )); do
-
-        LETTER="${ID:$i:1}"
+        letter="${id:$i:1}"
 
         # update count map
         # - if not seen yet -> make new entry with value 1
         # - if seen before -> increment
-        if [ ${COUNT[$LETTER]+_} ]; then
-            COUNT[$LETTER]=$(( ${COUNT[$LETTER]} + 1 ))
+        if [ ${count[$letter]+_} ]; then
+            count[$letter]=$(( ${count[$letter]} + 1 ))
         else
-            COUNT[$LETTER]=1
+            count[$letter]=1
         fi
 
     done
 
     # loop through checking for twins and triplets
-    HAS_TWIN=false
-    HAS_TRIPLET=false
-    for K in "${!COUNT[@]}"; do 
+    has_twin=false
+    has_triplet=false
+    for k in "${!count[@]}"; do 
 
-        if [[ ${COUNT[$K]} = 2 ]]; then
-            HAS_TWIN=true
+        if [[ ${count[$k]} = 2 ]]; then
+            has_twin=true
         fi
 
-        if [[ ${COUNT[$K]} = 3 ]]; then
-            HAS_TRIPLET=true
+        if [[ ${count[$k]} = 3 ]]; then
+            has_triplet=true
         fi
 
     done
 
     # update first and second num
 
-    if [[ $HAS_TWIN = true ]]; then
-        ((FIRST_NUM++))
+    if [[ $has_twin = true ]]; then
+        ((first_num++))
     fi 
 
-    if [[ $HAS_TRIPLET = true ]]; then
-        ((SECOND_NUM++))
+    if [[ $has_triplet = true ]]; then
+        ((second_num++))
     fi 
 
 done
 
-echo "$(($FIRST_NUM * $SECOND_NUM ))"
+echo "$(($first_num * $second_num ))"
 
 
 # PART 2
@@ -80,48 +79,48 @@ echo "$(($FIRST_NUM * $SECOND_NUM ))"
 #       output answer
 
 
-SOLUTION_FOUND=false
-IDS=(${INPUT[@]})
+solution_found=false
+ids=(${input[@]})
 
-for (( i=0; i<${#IDS[@]}; i++ )); do
+for (( i=0; i<${#ids[@]}; i++ )); do
 
     # If found solution, stop looping
     # (this should be in the for-loop condition above, but 
     #  didn't find a way to do this :p)
-    if [[ $SOLUTION_FOUND = true ]]; then
+    if [[ $solution_found = true ]]; then
         break
     fi
 
-    ID1=${IDS[$i]}
+    id1=${ids[$i]}
 
     # compare ID1 to every id coming after it (as ID2)
-    for (( j=$(( $i + 1 )); j<${#IDS[@]}; j++ )); do
+    for (( j=$(( $i + 1 )); j<${#ids[@]}; j++ )); do
 
-        ID2=${IDS[$j]}
+        id2=${ids[$j]}
 
         # count num different letters
-        NUM_DIFF=0
-        LATEST_DIFF_POS=0
-        for (( k=0; k<${#ID1}; k++ )); do
+        num_diff=0
+        latest_diff_pos=0
+        for (( k=0; k<${#id1}; k++ )); do
 
-            LETTER1="${ID1:$k:1}"
-            LETTER2="${ID2:$k:1}"
+            letter1="${id1:$k:1}"
+            letter2="${id2:$k:1}"
 
-            if [[ $LETTER1 != $LETTER2 ]]; then
-                ((NUM_DIFF++))
-                LATEST_DIFF_POS=$k
+            if [[ $letter1 != $letter2 ]]; then
+                ((num_diff++))
+                latest_diff_pos=$k
             fi
         done
 
         # if found diff of one
-        if [[ $NUM_DIFF == 1 ]]; then
+        if [[ $num_diff == 1 ]]; then
 
             # build answer by removing different character
-            LEFT_ANSWER_SUBSTR=${ID1:0:$LATEST_DIFF_POS}
-            RIGHT_ANSWER_SUBSTR=${ID1:$(( $LATEST_DIFF_POS + 1)):${#ID1}}
+            left_answer_substr=${id1:0:$latest_diff_pos}
+            right_answer_substr=${id1:$(( $latest_diff_pos + 1)):${#id1}}
 
-            echo "$LEFT_ANSWER_SUBSTR$RIGHT_ANSWER_SUBSTR"
-            SOLUTION_FOUND=true
+            echo "$left_answer_substr$right_answer_substr"
+            solution_found=true
             break
         fi
 
