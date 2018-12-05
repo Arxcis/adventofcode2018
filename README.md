@@ -55,12 +55,24 @@ $ cat day01/input | day01/main
 
 For all available test commands see `package.json`
 
+**Install node and do npm install**
+
+Get the latest node-version using nvm (https://github.com/creationix/nvm)
+```
+$ node -v
+v11.3.0
+
+$ npm -v
+6.4.1
+
+$npm install
+.... installing packages
+```
+
+
 **Generate tests for all solutions**
 ```
 $ npm run generate
-
-> adventofcode2018@ generate /home/jonas/git/github/arxcis/adventofcode2018
-> node generate.js
 
 Generated day01-chronal-calibration/test.js
 Generated day02-inventory-management-system/test.js
