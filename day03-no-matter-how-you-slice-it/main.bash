@@ -17,15 +17,15 @@ while read -r claim; do
 
     # don't question the awk..... it works...
     # source https://kuther.net/howtos/howto-print-text-between-tags-or-characters-awk-or-sed
-    claim_id=$(echo $claim | awk -F'[#| ]' '{print $2}')
-    claim_x=$(echo $claim | awk -F'[@ |,]' '{print $4}')
-    claim_y=$(echo $claim | awk -F'[,|:]' '{print $2}')
-    claim_w=$(echo $claim | awk -F'[ |x]' '{print $4}')
-    claim_h=$(echo $claim | awk -F'[x|$]' '{print $2}')
+    claim_id=$(echo "$claim" | awk -F'[#| ]' '{print $2}')
+    claim_x=$(echo "$claim" | awk -F'[@ |,]' '{print $4}')
+    claim_y=$(echo "$claim" | awk -F'[,|:]' '{print $2}')
+    claim_w=$(echo "$claim" | awk -F'[ |x]' '{print $4}')
+    claim_h=$(echo "$claim" | awk -F'[x|$]' '{print $2}')
 
     # precalculate so don't have to spawn subshells in loop
-    claim_xw=$(( $claim_x + $claim_w ))
-    claim_yh=$(( $claim_y + $claim_h ))
+    claim_xw=$(( claim_x + claim_w ))
+    claim_yh=$(( claim_y + claim_h ))
 
     # store parsed info for part 2
     claim_map[$claim_counter,id]=$claim_id
@@ -35,8 +35,8 @@ while read -r claim; do
     claim_map[$claim_counter,y2]=$claim_yh
 
     # "paint" claim on fabric, while counting overlaps
-    for (( i=$claim_x; i<$claim_xw; i++ )); do
-        for (( j=$claim_y; j<$claim_yh; j++ )); do
+    for (( i=claim_x; i<claim_xw; i++ )); do
+        for (( j=claim_y; j<claim_yh; j++ )); do
             case ${fabric_map[$i,$j]} in
                 "")
                     fabric_map[$i,$j]=1
