@@ -15,13 +15,31 @@ while read -r claim; do
 
     ((claim_counter++))
 
-    # don't question the awk..... it works...
-    # source https://kuther.net/howtos/howto-print-text-between-tags-or-characters-awk-or-sed
-    claim_id=$(echo "$claim" | awk -F'[#| ]' '{print $2}')
-    claim_x=$(echo "$claim" | awk -F'[@ |,]' '{print $4}')
-    claim_y=$(echo "$claim" | awk -F'[,|:]' '{print $2}')
-    claim_w=$(echo "$claim" | awk -F'[ |x]' '{print $4}')
-    claim_h=$(echo "$claim" | awk -F'[x|$]' '{print $2}')
+    # Alternative to below parsing of input:
+    # Sed insanity -> `claim_fields_array=($(echo $claim | sed 's/#\([0-9]*\)\s@\s\([0-9]*\),\([0-9]*\):\s\([0-9]*\)x\([0-9]*\)/\1 \2 \3 \4 \5/'))`
+    # parses claim into an array where fields are: 
+    # i:   0,1,2,3,4
+    # is: id,x,y,w,h
+
+    # Parse claims using magic Bash parameter expansion.
+    # In my testing it is faster than both sed and awk. Suspecting it 
+    #   is because it doesn't need to start up a separate program
+    # StackOverflow "inspiration": https://stackoverflow.com/a/13242563
+    # Reference: https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+
+    claim_id=${claim%%@*}
+    claim_id=${claim_id###}
+
+    claim_x=${claim%%,*}
+    claim_x=${claim_x##*@ }
+
+    claim_y=${claim%%:*}
+    claim_y=${claim_y##*,}
+
+    claim_w=${claim%%x*}
+    claim_w=${claim_w##*:}
+
+    claim_h=${claim##*x}
 
     # precalculate so don't have to spawn subshells in loop
     claim_xw=$(( claim_x + claim_w ))
@@ -55,12 +73,16 @@ echo $overlap_count
 
 # PART 2
 
+# increment for use in for loop
+((claim_counter++))
+
 # find claim that have no X in the FABRIC_MAP
-for (( i=0; i<$(( claim_counter + 1 )); i++ )); do
+for (( i=0; i<claim_counter; i++ )); do
 
     does_overlap=false
 
     for (( j=${claim_map[$i,x1]}; j<${claim_map[$i,x2]}; j++ )); do
+
 
         # if found soltuion -> break
         # (should be part of above for conditional, but still haven't 
@@ -75,6 +97,7 @@ for (( i=0; i<$(( claim_counter + 1 )); i++ )); do
                 break
             fi
         done
+
     done
 
     if [[ $does_overlap = false ]]; then
