@@ -1,24 +1,31 @@
 #!/bin/bash
 
-# sed command that outputs this (should be easier to work with. can remove the --)
+# PART 1
+
+# Sed command below deserves some explanation:
+# It takes the whole input and transforms it into a space separated list (to be 
+#   read by Bash as an array). The output from sed is piped to sort (the default 
+#   behavior of sort turns out to be good enough)
+# Here is the result of parsing the example input in this way:
 : '
-04 29 00 03 -- 101
-10 21 00 55 -- falls
-08 31 23 59 -- 101
-10 05 00 04 -- 691
-03 05 00 19 -- falls
-06 04 23 46 -- 827
-06 13 23 47 -- 283
-09 30 00 48 -- wakes
-05 26 00 54 -- wakes
-08 11 00 47 -- falls
-03 13 00 54 -- wakes
-06 09 00 45 -- wakes
-05 31 00 53 -- wakes
-10 13 00 51 -- falls
-07 22 00 18 -- wakes
+11 01 00 00 10
+11 01 00 05 falls
+11 01 00 25 wakes
+11 01 00 30 falls
+11 01 00 55 wakes
+11 01 23 58 99
+11 02 00 40 falls
+11 02 00 50 wakes
+11 03 00 05 10
+11 03 00 24 falls
+11 03 00 29 wakes
+11 04 00 02 99
+11 04 00 36 falls
+11 04 00 46 wakes
+11 05 00 03 99
+11 05 00 45 falls
+11 05 00 55 wakes
 '
-# `sed 's/^\[1518-\([[:digit:]][[:digit:]]\)-\([[:digit:]][[:digit:]]\)\s\([[:digit:]][[:digit:]]\):\([[:digit:]][[:digit:]]\)\]\s.*#\([[:digit:]]*\).*/\1 \2 \3 \4 -- \5/;s/^\[1518-\([[:digit:]][[:digit:]]\)-\([[:digit:]][[:digit:]]\)\s\([[:digit:]][[:digit:]]\):\([[:digit:]][[:digit:]]\)\]\s\(\w*\b\).*/\1 \2 \3 \4 -- \5/'`
 
 input=$(</dev/stdin)
 ordererd_and_parsed_input=$(echo "$input" | sed 's/^\[1518-\([[:digit:]][[:digit:]]\)-\([[:digit:]][[:digit:]]\)\s\([[:digit:]][[:digit:]]\):\([[:digit:]][[:digit:]]\)\]\s.*#\([[:digit:]]*\).*/\1 \2 \3 \4 \5/;s/^\[1518-\([[:digit:]][[:digit:]]\)-\([[:digit:]][[:digit:]]\)\s\([[:digit:]][[:digit:]]\):\([[:digit:]][[:digit:]]\)\]\s\(\w*\b\).*/\1 \2 \3 \4 \5/' | sort)
@@ -26,55 +33,57 @@ ordererd_and_parsed_input=$(echo "$input" | sed 's/^\[1518-\([[:digit:]][[:digit
 declare -A guard_map
 current_guard=-1
 asleep_minute=-1
+guard_ids=()
 while read -r line; do
 
     entry_array=($line)
+
+    # action is the field that is either "wakes" "falls" or a guard id
     action="${entry_array[4]}"
 
     case $action in
         wakes)
 
             # use asleep time to calc diff
+            # Bash parameter expanion is used to remove potential leading 0
             awake_minute=${entry_array[3]##0}
             diff=$(( awake_minute - asleep_minute ))
-            guard_map[$current_guard]=$(( ${guard_map[$current_guard]} + diff ))
+            guard_map[$current_guard,total]=$(( ${guard_map[$current_guard,total]} + diff ))
 
-            echo "GUARD_ID($current_guard) $awake_minute,$asleep_minute,$diff -> new total ${guard_map[$current_guard]} - ${#guard_map[@]}"
-
+            # update minute map for guard
+            for (( i=asleep_minute; i<awake_minute; i++ )); do
+                ((guard_map[$current_guard,$i]++))    
+            done
             ;;
         falls)
+            # store asleep time
+            # Bash parameter expanion is used to remove potential leading 0
             asleep_minute=${entry_array[3]##0}
             ;;
         *)
             current_guard=$action
 
-            # if not seen before, initialize to zero
-            if [[ -z ${guard_map[$current_guard]+_} ]]; then
-                guard_map[$current_guard]=0
+            # if not seen before, initialize to zero and add guard id to array
+            if [[ -z ${guard_map[$current_guard,total]+_} ]]; then
+                guard_map[$current_guard,total]=0
+                guard_ids+=($current_guard)
             fi
-
             ;;
     esac
 
 done < <(echo "$ordererd_and_parsed_input")
 
-
-# find guard with max sleeptime
 max_id=-1
 max_val=-1
-for guard_id in "${!guard_map[@]}"; do
-    echo "$guard_id ${guard_map[$guard_id]}"
-    if [[ ${guard_map[$guard_id]} -gt max_val ]]; then
+for guard_id in "${guard_ids[@]}"; do
+    if [[ ${guard_map[$guard_id,total]} -gt max_val ]]; then
         max_id=$guard_id
-        max_val="${guard_map[$guard_id]}"
-        echo "found new max! id: $max_id with $max_val"
+        max_val="${guard_map[$guard_id,total]}"
     fi
 done
 
-part_1_guard=$max_id
-
-# DEBUG
-echo "$ordererd_and_parsed_input"
+# store id of sleepiest guard (first half of part 1)
+sleepiest_guard_id=$max_id
 
 # find when guard was most asleep
 declare -A minute_map
@@ -85,10 +94,9 @@ while read -r line; do
     entry_array=($line)
     action="${entry_array[4]}"
 
-    if [[ $action -eq $part_1_guard ]]; then
+    if [[ $action -eq $sleepiest_guard_id ]]; then
         skipping=false
     elif [[ $skipping = false ]] && [[ $action == wakes ]]; then
-        echo "$action - wakes"
         awake_minute=${entry_array[3]##0}
 
         # for each minute increase sleep count
@@ -97,7 +105,6 @@ while read -r line; do
         done
 
     elif [[ $skipping = false ]] && [[ $action == falls ]]; then
-        echo "$action - falls"
         asleep_minute=${entry_array[3]##0}
     else
         skipping=true
@@ -110,13 +117,38 @@ done < <(echo "$ordererd_and_parsed_input")
 max_id=-1
 max_val=-1
 for minute_id in "${!minute_map[@]}"; do
-    echo "$minute_id ${minute_map[$minute_id]}"
     if [[ ${minute_map[$minute_id]} -gt max_val ]]; then
         max_id=$minute_id
         max_val="${minute_map[$minute_id]}"
-        echo "found new max! id: $max_id with $max_val"
     fi
 done
 
-echo "answer: $part_1_guard $max_id"
-echo "$(( part_1_guard * max_id ))"
+echo "$(( sleepiest_guard_id * max_id ))"
+
+
+# PART 2
+
+max_id=-1
+max_val=-1
+max_minute=-1
+for guard_id in "${guard_ids[@]}"; do
+    
+    inner_max_minute_id=-1
+    inner_max_minute_val=-1
+    for (( i=0; i<60; i++ )); do
+        if [[ ${guard_map[$guard_id,$i]} -gt inner_max_minute_val ]]; then
+            inner_max_minute_id=$i
+            inner_max_minute_val=${guard_map[$guard_id,$i]}
+        fi
+    done
+
+    if [[ $inner_max_minute_val -gt $max_val ]]; then
+        max_id=$guard_id
+        max_minute=$inner_max_minute_id
+        max_val=$inner_max_minute_val
+    fi
+
+done
+
+echo "$(( max_id * max_minute ))"
+
