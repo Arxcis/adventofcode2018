@@ -76,7 +76,7 @@ function makeTest(producer) {
         t.true(output.length <= expected.length)
 
         for (let i = 0; i < output.length; ++i) {
-            t.is(output[i], expected[i], `Part${i}`)
+            t.is(output[i], expected[i], `Part${i+1}`)
         }
 
         if (output.length && output.length !== expected.length) {
