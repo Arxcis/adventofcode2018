@@ -59,6 +59,8 @@ For all available test commands see `package.json`
 
 Get the latest node-version using nvm (https://github.com/creationix/nvm)
 ```
+$ nvm install node
+
 $ node -v
 v11.3.0
 
