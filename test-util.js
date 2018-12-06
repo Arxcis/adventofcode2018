@@ -1,65 +1,89 @@
 const fs = require('fs')
-const _exec = require('child_process').exec;
+const _exec = require('child_process').exec
+
+const inputFile = 'input'
+const outputFile = 'output'
+const main_go = 'main.go'
+const main_bash = 'main.bash'
+const main_py = 'main.py'
+const main_cpp = 'main.cpp'
+const main_rs = 'main.rs'
+const main_js = 'main.js'
+
+const target_rs = 'main-rs'
+const target_cpp = 'main-cpp'
 
 
-exports.testGo = async (t, dirpath) => {
+exports.enabledFilenames = [
+    main_go,
+    main_py,
+    main_cpp,
+    main_rs,
+    main_js,
+    main_bash
+]
 
-    let input,expected
-    try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
-                      .then(input => input.split('\n').join(' '))
-    } catch (e) {t.fail(e)}
+//
+// Interpreted languages
+//
+/* Go 1.11 */
+exports[main_go] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | go run ${dirpath}/${main_go}`))
 
-    let output = await exec(`go run ${dirpath}/main.go ${input}`)
-    
-    t.is(output, expected)
+/* Bash 4.4 */
+exports[main_bash] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | bash ${dirpath}/${main_bash}`))
+
+/* Python 3.6 */
+exports[main_py] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | python3 ${dirpath}/${main_py}`))
+
+/* Node 11 */
+exports[main_js] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | node ${dirpath}/${main_js}`))
+
+//
+// Compiled languages
+//
+/* C++ 17 */
+exports[main_cpp] = makeTest(async dirpath => {
+
+    await exec(`g++ -std=c++17 ${dirpath}/${main_cpp} -o ${dirpath}/${target_cpp}`)
+    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_cpp}`)
+    await exec(`rm ${dirpath}/${target_cpp}`)
+
+    return output;
+})
+
+/* Rust */
+exports[main_rs] = makeTest(async dirpath => {
+
+    await exec(`rustc ${dirpath}/${main_rs} -o ${dirpath}/${target_rs} -C debuginfo=0 -C opt-level=3`);
+    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_rs}`)
+    await exec(`rm ${dirpath}/${target_rs}`)
+
+    return output
+})
+
+function makeTest(producer) {
+    return async (t, dirpath) => {
+        try { 
+            var expected = await readFile(`${dirpath}/${outputFile}`)
+            expected = expected.split('\n').filter(expected => expected)
+        } catch (e) { 
+            t.fail(e) 
+        }
+        let output = await producer(dirpath)
+        output = output.split('\n').filter(output => output)
+
+        t.not(output.length, 0)
+        t.true(output.length <= expected.length)
+
+        for (let i = 0; i < output.length; ++i) {
+            t.is(output[i], expected[i], `Part${i}`)
+        }
+
+        if (output.length && output.length !== expected.length) {
+            t.log(`Partial solution ${output.length} of ${expected.length}`)
+        }
+    }
 }
-
-exports.testCpp = async (t, dirpath) => {
-
-    let input,expected
-    try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
-                      .then(input => input.split('\n').join(' '))
-    } catch (e) {t.fail(e)}
-
-    await exec(`g++ -std=c++17 ${dirpath}/main.cpp -o ${dirpath}/main`)
-    let output = await exec(`${dirpath}/main ${input}`, {silent: true})
-    await exec(`rm ${dirpath}/main`)
-
-    t.is(output, expected)
-}
-
-exports.testBash = async (t, dirpath) => {
-
-    let input,expected
-    try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
-                      .then(input => input.split('\n').join(' '))
-    } catch (e) {t.fail(e)}
-
-    let output = await exec(`bash  ${dirpath}/main.bash ${input}`);
-    
-    t.is(output, expected)
-}
-
-exports.testPython = async (t, dirpath) => {
-
-    let input,expected
-    try {
-        expected = await readFile(dirpath+"/output")
-        input = await readFile(dirpath+"/input")
-                      .then(input => input.split('\n').join(' '))
-    } catch (e) {t.fail(e)}
-
-    let output = await exec(`python3  ${dirpath}/main.py ${input}`);
-    
-    t.is(output, expected)
-}
-
 
 const exec = commands => {
     return new Promise(resolve => {
@@ -75,10 +99,7 @@ const readFile = (dirpath) => {
             if (err) {
                 reject(err)
             }
-            if (data) {
-                resolve(data.toString())
-            }
-            reject(err)
+            resolve(data.toString())
         })
     })
 }

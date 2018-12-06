@@ -1,9 +1,12 @@
-matrix:
-  include:
-    - language: node_js
-      node_js: "node"
-      os: osx
-      before_install:
-        - brew install go gcc bash python
-      script:
-        - npm run test
+language: node_js
+node_js: "node"
+os: osx
+env:
+  - HOMEBREW_NO_AUTO_UPDATE=1
+before_install:
+  - brew install bash
+  - brew install rust
+script:
+  - node generate.js
+  - node difftest.js
+

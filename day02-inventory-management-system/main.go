@@ -3,16 +3,18 @@ package main
 import (
 	"fmt"
 	"os"
+	"bufio"
 )
 
 func main(){
 	//
 	// Read args values into integer array
 	//
-	if len(os.Args) < 2 {
-		panic("Missing input")
-	}
-	args := os.Args[1:]
+    args := make([]string, 0)
+    s := bufio.NewScanner(os.Stdin)
+    for s.Scan() {
+        args = append(args, s.Text())
+    }
 
 	//PART 1
 	//Store total occurrences of each letter

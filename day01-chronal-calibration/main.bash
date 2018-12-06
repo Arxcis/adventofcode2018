@@ -1,48 +1,52 @@
 #!/bin/bash
 
-# PART 1
-
-RESULT=0
-INPUT="$@"
-
-# add every freq in input to RESULT
-for var in $INPUT; do
-    RESULT=$(($RESULT + $var))
+# read input from stdin
+input=()
+while read -r line; do
+    input+=($line)
 done
 
-echo $RESULT
+# PART 1
+
+result=0
+
+# add every freq in input to RESULT
+for freq in "${input[@]}"; do
+    result=$((result + freq))
+done
+
+echo $result
 
 # PART 2
 # Takes a few seconds :)
 # The map functionality requires Bash 4.3 according to https://stackoverflow.com/a/30757358
 
-declare -A SEEN             # Map of seen frequencies (used as set)
-CURRENT=0                   # current freq
-INPUT=("$@")                # the input as an array
-INPUT_LENGTH=${#INPUT[@]}   # the length of the input array (stored for readability)
-INPUT_INDEX=0               # Our current index in the input array
+declare -A seen             # Map of seen frequencies (used as set)
+current=0                   # current freq
+input_length=${#input[@]}   # the length of the input array (stored for readability)
+input_index=0               # Our current index in the input array
 
 while true; do
 
     # if already seen, break. we're done
-    if [[ -v SEEN[$CURRENT] ]]; then
+    if [[ ${seen[$current]+_} ]]; then
         break
     fi
 
     # add to seen
     # (value not used)
-    SEEN[$CURRENT]=1
+    seen[$current]=1
 
     # calc next freq
-    CHANGE="${INPUT[$INPUT_INDEX]}"
-    CURRENT=$((CURRENT + CHANGE))
+    change="${input[$input_index]}"
+    current=$((current + change))
 
     # make sure the loop wraps
-    ((INPUT_INDEX++))
-    if [[ $INPUT_INDEX -ge $INPUT_LENGTH ]]; then
-        INPUT_INDEX=0
+    ((input_index++))
+    if [[ $input_index -ge $input_length ]]; then
+        input_index=0
     fi
 done
 
-echo $CURRENT
+echo $current
 
