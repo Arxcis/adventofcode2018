@@ -20,3 +20,7 @@ tags
 
 ## npm
 node_modules/
+
+## IntelliJ files
+*.iml
+.idea/
