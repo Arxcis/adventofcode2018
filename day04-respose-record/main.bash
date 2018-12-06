@@ -31,8 +31,8 @@ input=$(</dev/stdin)
 ordererd_and_parsed_input=$(echo "$input" | sed 's/^\[1518-\([[:digit:]][[:digit:]]\)-\([[:digit:]][[:digit:]]\)\s\([[:digit:]][[:digit:]]\):\([[:digit:]][[:digit:]]\)\]\s.*#\([[:digit:]]*\).*/\1 \2 \3 \4 \5/;s/^\[1518-\([[:digit:]][[:digit:]]\)-\([[:digit:]][[:digit:]]\)\s\([[:digit:]][[:digit:]]\):\([[:digit:]][[:digit:]]\)\]\s\(\w*\b\).*/\1 \2 \3 \4 \5/' | sort)
 
 # guard_map looks like this for each guard id:
-#   [<guard_id>,<$minute0>]=<number_of_times_slept_at_minute0>
-#   [<guard_id>,<$minute1>]=<number_of_times_slept_at_minute1>
+#   [<guard_id>,<minute0>]=<number_of_times_slept_at_minute0>
+#   [<guard_id>,<minute1>]=<number_of_times_slept_at_minute1>
 #   ...
 #   [<guard_id>,<minute59>]=<number_of_times_slept_at_minute59>
 #   [<guard_id>,total]=<total_minutes_slept>
