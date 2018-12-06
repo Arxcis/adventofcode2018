@@ -62,7 +62,7 @@ while read -r line; do
 
             # update minute map for guard
             for (( i=asleep_minute; i<awake_minute; i++ )); do
-                ((guard_map[current_guard,i]++))    
+                ((guard_map[$current_guard,$i]++))    
             done
             ;;
 
