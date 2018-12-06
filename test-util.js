@@ -10,6 +10,10 @@ const main_cpp = 'main.cpp'
 const main_rs = 'main.rs'
 const main_js = 'main.js'
 
+const target_rs = 'main-rs'
+const target_cpp = 'main-cpp'
+
+
 exports.enabledFilenames = [
     main_go,
     main_py,
@@ -39,22 +43,20 @@ exports[main_js] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | node 
 //
 /* C++ 17 */
 exports[main_cpp] = makeTest(async dirpath => {
-    const target = 'main-cpp'
 
-    await exec(`g++ -std=c++17 ${dirpath}/${main_cpp} -o ${dirpath}/${target}`)
-    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target}`)
-    await exec(`rm ${dirpath}/${target}`)
+    await exec(`g++ -std=c++17 ${dirpath}/${main_cpp} -o ${dirpath}/${target_cpp}`)
+    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_cpp}`)
+    await exec(`rm ${dirpath}/${target_cpp}`)
 
     return output;
 })
 
 /* Rust */
 exports[main_rs] = makeTest(async dirpath => {
-    const target = 'main-rs'
 
-    await exec(`rustc ${dirpath}/${main_rs} -o ${dirpath}/${target} -C debuginfo=0 -C opt-level=3`);
-    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target}`)
-    await exec(`rm ${dirpath}/${target}`)
+    await exec(`rustc ${dirpath}/${main_rs} -o ${dirpath}/${target_rs} -C debuginfo=0 -C opt-level=3`);
+    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_rs}`)
+    await exec(`rm ${dirpath}/${target_rs}`)
 
     return output
 })
