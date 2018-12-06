@@ -38,7 +38,7 @@ ordererd_and_parsed_input=$(echo "$input" | sed 's/^\[1518-\([[:digit:]][[:digit
 #   [<guard_id>,total]=<total_minutes_slept>
 declare -A guard_map
 
-# look (parsed) input and fill guard_map with info
+# look through (parsed) input and fill guard_map with info
 current_guard=-1
 asleep_minute=-1
 guard_ids=()
@@ -62,7 +62,7 @@ while read -r line; do
 
             # update minute map for guard
             for (( i=asleep_minute; i<awake_minute; i++ )); do
-                ((guard_map[$current_guard,$i]++))    
+                ((guard_map[current_guard,i]++))    
             done
             ;;
 
