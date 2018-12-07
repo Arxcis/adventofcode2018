@@ -139,7 +139,7 @@ done
 #done
 
 echo "here"
-           
+
 # find finite with most locations on map
 max_id=notavalidthing
 max_val=0
@@ -166,3 +166,63 @@ for id in "${finite_coordinate_ids[@]}"; do
 done
 
 echo $max_val
+
+
+
+
+# PART 2
+
+: << 'END_COMMENT'
+for each in topleft to bottomright
+    for each coordinate
+        add manhattan to total
+        if above region_max
+            break
+    if total under
+        regioncount++
+END_COMMENT
+
+
+region_max=10000
+inside_region_count=0
+for (( i=top_left_x; i<=bottom_right_x; i++ )); do
+    echo "$i out of $bottom_right_x"
+    for (( j=top_left_y; j<=bottom_right_y; j++ )); do
+
+        total_manhattan=0
+
+        for (( k=0; k<length; k+=2 )); do
+            l=$(( k + 1 ))
+
+            check_x=${parsed_input[$k]}
+            check_y=${parsed_input[$l]}
+
+            manhattan_x_component=$(( check_x - i ))
+            manhattan_y_component=$(( check_y - j ))
+
+            if [[ $manhattan_x_component -lt 0 ]]; then 
+                manhattan_x_component=$(( 0 - manhattan_x_component ))
+            fi
+
+            if [[ $manhattan_y_component -lt 0 ]]; then 
+                manhattan_y_component=$(( 0 - manhattan_y_component ))
+            fi
+
+            manhattan=$(( manhattan_x_component + manhattan_y_component ))
+
+            ((total_manhattan+=$manhattan))
+
+            if [[ $total_manhattan -ge $region_max ]]; then
+                break
+            fi
+
+        done
+
+        if [[ $total_manhattan -lt $region_max ]]; then
+            ((inside_region_count++))
+        fi
+        
+    done
+done
+
+echo "inside region: $inside_region_count"
