@@ -4,38 +4,40 @@
 input=$(</dev/stdin)
 parsed_input=($(echo "$input" | sed 's/,//;s/\n//'))
 
-#...now what
-
+# Notes from my solve:
 : << 'END_COMMENT'
-
-is finite if:
-    there exists other coordinate with:
-        x lower
-        x higher
-        y lower
-        y higher
-
+a coordinate is finite if there exists another coordinate with:
+* lower x
+* higher x
+* lower y
+* higher y
 
 process:
-    find finite coordinates.
-    find top left, top right.
-    fill out grid from top left to top right :p
-    count which of the coordinates have the highest number of locations associated with them
+* find finite coordinates.
+* find top left, top right.
+* fill out grid from top left to top right, 
+  while keeping track of coordinates with a total manhattan distance less than $region_max (part 2)
+* count which of the coordinates have the highest number of locations associated with them (part 1)
 END_COMMENT
 
 length=${#parsed_input[@]}
+
+# initialize top left and bottom right to be the first coordinate
+# (just to have an actual coordinate to start with, will probably be overwritten)
 top_left_x=${parsed_input[0]}
 top_left_y=${parsed_input[1]}
 bottom_right_x=${parsed_input[0]}
 bottom_right_y=${parsed_input[1]}
+
+# find finite coordinates, and add them to the $finite_coordinate_ids array
+# (see heredoc at top for logic)
+# (this section could probably be sped up if some IQ is applied :p)
 finite_coordinate_ids=()
 for (( i=0; i<length; i+=2 )); do
     j=$(( i + 1 ))
 
     my_x=${parsed_input[$i]}
     my_y=${parsed_input[$j]}
-
-    echo "$i,$j -> $my_x,$my_y"
 
     lower_x=false
     lower_y=false
@@ -47,8 +49,6 @@ for (( i=0; i<length; i+=2 )); do
 
         check_x=${parsed_input[$k]}
         check_y=${parsed_input[$l]}
-
-        echo "--$k,$l -> $check_x,$check_y"
 
         if [[ $check_x -lt $my_x ]]; then lower_x=true; fi
         if [[ $check_x -gt $my_x ]]; then higher_x=true; fi
@@ -62,7 +62,6 @@ for (( i=0; i<length; i+=2 )); do
        [[ $higher_x = true ]] &&
        [[ $higher_y = true ]]; then
 
-        echo "--I'M FINITE!!"
         finite_coordinate_ids+=($i)
 
     else
@@ -76,86 +75,83 @@ for (( i=0; i<length; i+=2 )); do
 
 done
 
-echo "tl: $top_left_x,$top_left_y, br: $bottom_right_x,$bottom_right_y, finites: ${finite_coordinate_ids[@]}"
 
-# loop from top left to bottom right, filling out nodes
+# map is used as a fake two-dimentional array. value map[i,j] ends up holding either the id of the coordinate 
+# that is closest, or a "." if multiple coordinates are closest
 declare -A map
+
+# the absolute max manhattan distance is from the top left to the bottom right.
+# used as initial value of search for min
 max_dist=$(( bottom_right_x -top_left_x + bottom_right_y - top_left_y ))
-echo "absolute max: $max_dist"
+
+# used for part 2
+region_max=10000
+inside_region_count=0
+
+# loop from top left to bottom right and fill map with values.
 for (( i=top_left_x; i<=bottom_right_x; i++ )); do
-    echo "$i...$bottom_right_x"
     for (( j=top_left_y; j<=bottom_right_y; j++ )); do
 
         # determine dot
-        dot=notavalidthing
+        dot=-1
         min_dist=$max_dist
+        
+        total_manhattan=0
         for (( k=0; k<length; k+=2 )); do
 
             l=$(( k + 1 ))
 
+            # find location of coordinate
             check_x=${parsed_input[$k]}
             check_y=${parsed_input[$l]}
 
+            # determine manhattan distance from i,j to check_x,check_y
+    
             manhattan_x_component=$(( check_x - i ))
             manhattan_y_component=$(( check_y - j ))
-
-            if [[ $manhattan_x_component -lt 0 ]]; then 
-                manhattan_x_component=$(( 0 - manhattan_x_component ))
-            fi
-
-            if [[ $manhattan_y_component -lt 0 ]]; then 
-                manhattan_y_component=$(( 0 - manhattan_y_component ))
-            fi
-
+            if [[ $manhattan_x_component -lt 0 ]]; then manhattan_x_component=$(( 0 - manhattan_x_component )); fi
+            if [[ $manhattan_y_component -lt 0 ]]; then manhattan_y_component=$(( 0 - manhattan_y_component )); fi 
             manhattan=$(( manhattan_x_component + manhattan_y_component ))
 
-            #echo "--> $i,$j $check_x,$check_y -> man: $manhattan"
+            # (for part 2)
+            ((total_manhattan+=$manhattan))
 
+            # if found new min dist -> update dot with id of coordinate and update min_dist
+            # if found same min_dist -> update dot to be "."
             if [[ $manhattan -lt $min_dist ]]; then
                 dot=$k
                 min_dist=$manhattan
-                #echo "found new smallest dist -> $dot, man: $manhattan"
             elif [[ $manhattan -eq $min_dist ]]; then
-                #echo "same dist"
                 dot="."
             fi
 
-
-            map[$i,$j]=$dot
-
         done
+
+        map[$i,$j]=$dot
+
+        if [[ $total_manhattan -lt $region_max ]]; then
+            ((inside_region_count++))
+        fi
 
     done
 done
 
-# draw for debug
-#for (( i=top_left_x; i<=bottom_right_x; i++ )); do
-#    for (( j=top_left_y; j<=bottom_right_y; j++ )); do
-#
-#        printf "${map[$i,$j]}\t"
-#
-#    done
-#    echo
-#done
-
-echo "here"
+# store answer for part 2
+# (answer is number of locations that have a total manhattan distance to 
+#  all coordinates less than $region_max)
+part_2_answer=$inside_region_count
 
 # find finite with most locations on map
-max_id=notavalidthing
+max_id=-1
 max_val=0
 for id in "${finite_coordinate_ids[@]}"; do
-    echo "$id ${#finite_coordinate_ids[@]}"
 
     count=0
     for (( i=top_left_x; i<=bottom_right_x; i++ )); do
         for (( j=top_left_y; j<=bottom_right_y; j++ )); do
-            
-            #echo "$id - ${map[$i,$j]}"
             if [[ "$id" == "${map[$i,$j]}" ]]; then
                 ((count++))
-                #echo "koko"
             fi
-
         done
     done
 
@@ -165,64 +161,8 @@ for id in "${finite_coordinate_ids[@]}"; do
     fi
 done
 
-echo $max_val
+# part 1 answer is the size of the largest region
+part_1_answer=$max_val
 
-
-
-
-# PART 2
-
-: << 'END_COMMENT'
-for each in topleft to bottomright
-    for each coordinate
-        add manhattan to total
-        if above region_max
-            break
-    if total under
-        regioncount++
-END_COMMENT
-
-
-region_max=10000
-inside_region_count=0
-for (( i=top_left_x; i<=bottom_right_x; i++ )); do
-    echo "$i out of $bottom_right_x"
-    for (( j=top_left_y; j<=bottom_right_y; j++ )); do
-
-        total_manhattan=0
-
-        for (( k=0; k<length; k+=2 )); do
-            l=$(( k + 1 ))
-
-            check_x=${parsed_input[$k]}
-            check_y=${parsed_input[$l]}
-
-            manhattan_x_component=$(( check_x - i ))
-            manhattan_y_component=$(( check_y - j ))
-
-            if [[ $manhattan_x_component -lt 0 ]]; then 
-                manhattan_x_component=$(( 0 - manhattan_x_component ))
-            fi
-
-            if [[ $manhattan_y_component -lt 0 ]]; then 
-                manhattan_y_component=$(( 0 - manhattan_y_component ))
-            fi
-
-            manhattan=$(( manhattan_x_component + manhattan_y_component ))
-
-            ((total_manhattan+=$manhattan))
-
-            if [[ $total_manhattan -ge $region_max ]]; then
-                break
-            fi
-
-        done
-
-        if [[ $total_manhattan -lt $region_max ]]; then
-            ((inside_region_count++))
-        fi
-        
-    done
-done
-
-echo "inside region: $inside_region_count"
+echo $part_1_answer
+echo $part_2_answer
