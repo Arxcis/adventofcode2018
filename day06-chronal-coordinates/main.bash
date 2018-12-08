@@ -114,7 +114,7 @@ for (( i=top_left_x; i<=bottom_right_x; i++ )); do
             manhattan=$(( manhattan_x_component + manhattan_y_component ))
 
             # (for part 2)
-            ((total_manhattan+=$manhattan))
+            ((total_manhattan+=manhattan))
 
             # if found new min dist -> update dot with id of coordinate and update min_dist
             # if found same min_dist -> update dot to be "."
@@ -142,7 +142,6 @@ done
 part_2_answer=$inside_region_count
 
 # find finite with most locations on map
-max_id=-1
 max_val=0
 for id in "${finite_coordinate_ids[@]}"; do
 
@@ -156,7 +155,6 @@ for id in "${finite_coordinate_ids[@]}"; do
     done
 
     if [[ $count -gt $max_val ]]; then
-        max_id=$id
         max_val=$count
     fi
 done
