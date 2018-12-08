@@ -53,21 +53,18 @@ class MinuteCounter:
 def main():
 
     #
-    # Part 1
-    # ..parse each line into an Entry struct
+    # ------------- Part 1 ------------------
+    #
+    # ..parse each line into an Entry struct, sort by date ascending
     #
     entries = [Entry(line) for line in fileinput.input()]
-
-    #
-    # ..sort by date ascending
-    #
     entries.sort(key=lambda entry: entry.timestamp)
 
 
     #
-    # ..parse each shift into Shift struct
+    # ..parse each shift into Shift struct + keep track of unique guard ids
     #
-    minute_counters = {}
+    guard_ids = {}
     shifts = []
     shift = None
     regex_guard = re.compile(r'#(\d+) begins shift')    
@@ -79,8 +76,8 @@ def main():
                 shift = None
 
             [guard_id] = re.search(regex_guard, entry.rest).groups()
+            guard_ids[guard_id] = None
             shift = Shift(guard_id)
-            minute_counters[guard_id] = None
 
         elif entry.command == 'wakes':
             shift.wakes_up(entry.minute)
@@ -91,7 +88,8 @@ def main():
     #
     # ...make one minute counter for each guard
     #
-    for guard_id in minute_counters.keys():
+    minute_counters = {}
+    for guard_id in guard_ids.keys():
         minute_counters[guard_id] = MinuteCounter()
 
     #
@@ -114,6 +112,8 @@ def main():
     #
     minutes = enumerate(guard_who_sleeps_the_most[1].minutes)
     minute_he_most_often_sleeps = max([(value, index) for index, value in minutes])
+    
+    print(guard_who_sleeps_the_most[0], minute_he_most_often_sleeps[1])
     print(guard_who_sleeps_the_most[0] * minute_he_most_often_sleeps[1])
 
 if __name__ == "__main__":
