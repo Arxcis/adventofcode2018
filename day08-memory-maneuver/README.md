@@ -1,4 +1,6 @@
---- Day 8: Memory Maneuver ---
+# Day 8: Memory Maneuver
+
+## --- Part 1 ---
 
 The sleigh is much easier to pull than you'd expect for something its weight. Unfortunately, neither you nor the Elves know which way the North Pole is from here.
 
@@ -38,3 +40,5 @@ D, which has 0 child nodes and 1 metadata entry (99).
 The first check done on the license file is to simply add up all of the metadata entries. In this example, that sum is 1+1+2+10+11+12+2+99=138.
 
 What is the sum of all metadata entries?
+
+## --- Part 2 ---
