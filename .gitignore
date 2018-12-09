@@ -22,6 +22,10 @@ test.js
 ## npm
 node_modules/
 
+## IntelliJ files
+*.iml
+.idea/
+
 ## rust files
 **/target
 **/*.rs.bk
