@@ -12,7 +12,7 @@ You find yourself standing on a snow-covered coastline; apparently, you landed a
 
 The instructions specify a series of steps and requirements about which steps must be finished before others can begin (your puzzle input). Each step is designated by a single letter. For example, suppose you have the following instructions:
 
-````
+```
 Step C must be finished before step A can begin.
 Step C must be finished before step F can begin.
 Step A must be finished before step B can begin.
