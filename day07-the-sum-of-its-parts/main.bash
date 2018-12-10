@@ -1,289 +1,216 @@
 #!/bin/bash
 
+###############################################################################
+### SETUP
+### 
+### This section contains setup common to part 1 and 2
+###############################################################################
+
 # read input and remove comma and newline
 input=$(</dev/stdin)
 parsed_input=$(echo "$input" | sed 's/^Step \([[:alpha:]]\) must be finished before step \([[:alpha:]]\) can begin.$/\1 \2/g')
 
-declare -A map
+# this map is structured like this:
+#   depends_on_map[<node>]="<dependency1><dependency2>"
+# So the node E from the example input would look like this:
+#   depends_on_map[E]="BDF" 
+declare -A depends_on_map
 
-while read -r line; do
-    line=($line)
-    map[${line[1]}]="${map[${line[1]}]}${line[0]}"
-done <<< $(echo "$parsed_input")
+# no_dependencies is an array containing the nodes that have no 
+# dependencies, and so are ready to be printed / processed by a worker
+#
+# the array is kept sorted in ascending order, see function below
+no_dependencies=()
 
-# add entries with no children
-nochildren=()
-for var in ${!map[@]}; do
-    refs="${map[$var]}"
-    #echo "asdf: $refs"
-    for (( i=0; i<${#refs}; i++ )); do
-        father=${refs:$i:1}
-        #echo "asdfasdf: $father"
-        if [[ -z ${map[$father]+_} ]] && [[ ! "${nochildren[@]}" =~ "${father}" ]]; then
-            nochildren+=($father)
-        fi
-    done
-done
+setup_depends_on_map() {
 
+    # build depends_on_map from input
+    while read -r line; do
+        line=($line)
+        depends_on_map[${line[1]}]="${depends_on_map[${line[1]}]}${line[0]}"
+    done <<< $(echo "$parsed_input")
 
-# sort nochildren
-length=${#nochildren[@]}
-for (( i=0; i<length; i++ )); do
-    min_index=$i
-    min_val=${nochildren[$i]}
-    for (( j=i+1; j<length; j++ )); do
-        if [[ ${nochildren[$j]} < $min_val ]]; then
-            min_index=$j
-            min_val=${nochildren[$j]}
-        fi
-    done
-    tmp=${nochildren[$i]}
-    nochildren[$i]=${nochildren[$min_index]}
-    nochildren[$min_index]=$tmp
-done
+    # initialize no_dependencies array with nodes that have no dependencies in input
+    for var in ${!depends_on_map[@]}; do
+        dependencies="${depends_on_map[$var]}"
+        for (( i=0; i<${#dependencies}; i++ )); do
+            dependency=${dependencies:$i:1}
+            if [[ -z ${depends_on_map[$dependency]+_} ]] && 
+               [[ ! "${no_dependencies[@]}" =~ "${dependency}" ]]; then
 
-# until no nodes left to look at
-while [[ ${#nochildren[@]} -gt 0 ]]; do
-
-    # remove front
-    current=${nochildren[0]}
-
-    #echo "curr: $current"
-    printf $current
-
-    # remove refs from map
-    for node in "${!map[@]}"; do
-        map[$node]=${map[$node]//$current}
-        #echo "-->$node : ${map[$node]}"
-        
-        # if now doesn't have any dads, add to nochildren
-        refs="${map[$node]}"
-        if [[ "${#refs}" == "0" ]]; then
-            unset map[$node]
-            nochildren+=($node)
-            #echo "-->removed $node"
-            #echo "-->nochildren: ${nochildren[@]}"
-        fi
-
-    done
-
-    # remove from nochildren
-    nochildren=(${nochildren[@]/$current})
-
-    #echo "-->removed $current from nochildren"
-
-    # sort nochildren
-    length=${#nochildren[@]}
-    for (( i=0; i<length; i++ )); do
-        min_index=$i
-        min_val=${nochildren[$i]}
-        for (( j=i+1; j<length; j++ )); do
-            if [[ ${nochildren[$j]} < $min_val ]]; then
-                min_index=$j
-                min_val=${nochildren[$j]}
+                no_dependencies+=($dependency)
             fi
         done
-        tmp=${nochildren[$i]}
-        nochildren[$i]=${nochildren[$min_index]}
-        nochildren[$min_index]=$tmp
+    done
+}
+
+# sorts no_dependencies in ascending order using selection sort
+# made into function as sorting is needed many places
+sort_no_dependencies() {
+
+    # declare all variables used in this function as local to 
+    # prevent affecting other code
+    local length=${#no_dependencies[@]} i j min_index min_val
+
+    for (( i=0; i<length; i++ )); do
+
+        min_index=$i
+        min_val=${no_dependencies[$i]}
+        for (( j=i+1; j<length; j++ )); do
+            if [[ ${no_dependencies[$j]} < $min_val ]]; then
+                min_index=$j
+                min_val=${no_dependencies[$j]}
+            fi
+        done
+
+        # swap 
+        local tmp=${no_dependencies[$i]}
+        no_dependencies[$i]=${no_dependencies[$min_index]}
+        no_dependencies[$min_index]=$tmp
+
+    done
+}
+
+###############################################################################
+### PART 1
+###############################################################################
+
+# call setup functions
+setup_depends_on_map
+sort_no_dependencies
+
+part_1_solution=""
+
+# until no nodes left to look at:
+#   remove front of no_dependencies and add it to the output
+#   remove all references to it in depends_on_map
+#   add nodes that now have no dependencies to no_dependencies
+#   remove it from no_dependencies
+while [[ ${#no_dependencies[@]} -gt 0 ]]; do
+
+    # remove front
+    current=${no_dependencies[0]}
+
+    # add current to solution
+    part_1_solution+=$current
+
+    # remove dependancy entries from depends_on_map
+    for node in "${!depends_on_map[@]}"; do
+
+        depends_on_map[$node]=${depends_on_map[$node]//$current}
+        
+        # if now doesn't have any dependencies, add to no_dependencies
+        deps="${depends_on_map[$node]}"
+        if [[ "${#deps}" == "0" ]]; then
+            unset depends_on_map[$node]
+            no_dependencies+=($node)
+        fi
+
     done
 
-    #echo "-->nochildren: ${nochildren[@]}"
+    # remove from no_dependencies
+    no_dependencies=(${no_dependencies[@]/$current})
+
+    # sort using our function
+    sort_no_dependencies
+
 done
 
-
-: << 'END_COMMENT'
-
-map node -> nodefader1, nodefader2, ... , nodefaderN
-
-fra noder i map med null fedre, finn neste i alfabetisk rekkefølge
-    skriv ut
-    fjern alle referanser til denne som fader
-    fjern entry
-END_COMMENT
+echo "$part_1_solution"
 
 
-
-echo
-
-
-# XBEFLNGIRQUHPSJKVTYOCZDWMA
-
-
-
-
-
+###############################################################################
 # PART 2
+###############################################################################
 
+
+# worker i's state is stored in two arrays:
+#   worker_task[i] stores what instruction the worker is currently working on
+#   worker_time[i] stores the time until the task is finished
+# (NOTE that this part needs to be manually changed for the example input to work)
 worker_num=5
 worker_task=(0 0 0 0 0)
 worker_time=(0 0 0 0 0)
 
 
+# call setup functions
+setup_depends_on_map
+sort_no_dependencies
 
-
-parsed_input=$(echo "$input" | sed 's/^Step \([[:alpha:]]\) must be finished before step \([[:alpha:]]\) can begin.$/\1 \2/g')
-
-declare -A map
-
-while read -r line; do
-    line=($line)
-    map[${line[1]}]="${map[${line[1]}]}${line[0]}"
-done <<< $(echo "$parsed_input")
-
-# add entries with no children
-nochildren=()
-for var in ${!map[@]}; do
-    refs="${map[$var]}"
-    #echo "asdf: $refs"
-    for (( i=0; i<${#refs}; i++ )); do
-        father=${refs:$i:1}
-        #echo "asdfasdf: $father"
-        if [[ -z ${map[$father]+_} ]] && [[ ! "${nochildren[@]}" =~ "${father}" ]]; then
-            nochildren+=($father)
-        fi
-    done
-done
-
-
-# sort nochildren
-length=${#nochildren[@]}
-for (( i=0; i<length; i++ )); do
-    min_index=$i
-    min_val=${nochildren[$i]}
-    for (( j=i+1; j<length; j++ )); do
-        if [[ ${nochildren[$j]} < $min_val ]]; then
-            min_index=$j
-            min_val=${nochildren[$j]}
-        fi
-    done
-    tmp=${nochildren[$i]}
-    nochildren[$i]=${nochildren[$min_index]}
-    nochildren[$min_index]=$tmp
-done
-
-# until no nodes left to look at
+# -1 because first round of loop is used for setup
 time=-1
-part_1_output=""
-while [[ ${#nochildren[@]} -gt 0 ]]; do
 
+while [[ ${#no_dependencies[@]} -gt 0 ]]; do
 
-    echo "worker_task before: ${worker_task[@]}"
-    echo "worker_time before: ${worker_time[@]}"
+    ((time++))
 
     # decrease time by one for each worker
     for (( i=0; i<worker_num; i++ )); do
-        echo "looking at worker ${worker_task[$i]}"
+
         if [[ "${worker_task[$i]}" != "0" ]]; then
+            
             if [[ ${worker_time[$i]} -gt 1 ]]; then
+
                 worker_time[$i]=$(( ${worker_time[$i]} - 1 ))
+                
             else
 
                 task=${worker_task[$i]}
                 worker_task[$i]=0
                 worker_time[$i]=0
 
-                # remove refs from map
-                for node in "${!map[@]}"; do
-                    map[$node]=${map[$node]//$task}
-                    #echo "-->$node : ${map[$node]}"
+                # remove dependency entries from depends_on_map
+                for node in "${!depends_on_map[@]}"; do
+
+                    depends_on_map[$node]=${depends_on_map[$node]//$task}
                     
-                    # if now doesn't have any dads, add to nochildren
-                    refs="${map[$node]}"
+                    # if now doesn't have any dads, add to no_dependencies
+                    refs="${depends_on_map[$node]}"
                     if [[ "${#refs}" == "0" ]]; then
-                        unset map[$node]
-                        nochildren+=($node)
-                        #echo "-->removed $node"
-                        #echo "-->nochildren: ${nochildren[@]}"
+                        unset depends_on_map[$node]
+                        no_dependencies+=($node)
                     fi
 
                 done
 
-                # remove from nochildren
-                nochildren=(${nochildren[@]/$task})
+                # remove from no_dependencies
+                no_dependencies=(${no_dependencies[@]/$task})
 
-                #echo "-->removed $node from nochildren"
-
-                # sort nochildren
-                length=${#nochildren[@]}
-                for (( j=0; j<length; j++ )); do
-                    min_index=$j
-                    min_val=${nochildren[$j]}
-                    for (( k=j+1; k<length; k++ )); do
-                        if [[ ${nochildren[$k]} < $min_val ]]; then
-                            min_index=$k
-                            min_val=${nochildren[$k]}
-                        fi
-                    done
-                    tmp=${nochildren[$j]}
-                    nochildren[$j]=${nochildren[$min_index]}
-                    nochildren[$min_index]=$tmp
-                done
+                # sort no_dependencies
+                sort_no_dependencies
 
             fi
+
         fi
+
     done
 
-    echo "worker_task after : ${worker_task[@]}"
-    echo "worker_time after : ${worker_time[@]}"
+    # try and assign tasks ready to be processed (those in no_dependencies) to a worker
+    for node in ${no_dependencies[@]}; do
 
-    for node in ${nochildren[@]}; do
-        echo "${worker_task[@]}"
-        echo $node
+        # if a worker is not already working on this
         if [[ ! "${worker_task[@]}" =~ "$node" ]]; then
+
+            # look through workers for one that is available
             for (( i=0; i<worker_num; i++ )); do
                 if [[ ${worker_task[$i]} == 0 ]]; then
-                    value_node=$(printf '%d' "'$node")
-                    value_A=$(printf '%d' "'A")
-                    value=$(( value_node - value_A + 1 + 60 ))
-                    echo "$node inserted with $value"
+                    
+                    # set available worker to work on $node
+                    # time to finish is position in the alphabet + 60
+                    ascii_value_node=$(printf '%d' "'$node")
+                    ascii_value_A=$(printf '%d' "'A")
+                    value=$(( ascii_value_node - ascii_value_A + 1 + 60 ))
                     worker_task[$i]=$node
                     worker_time[$i]=$value
-                    part_1_output+=$node
                     break
                 fi
             done
+
         fi
+
     done
 
-
-    #echo "curr: $current"
-    #printf $current
-
-
-    #echo "-->nochildren: ${nochildren[@]}"
-
-    ((time++))
-    echo "time: $time"
 done
 
-echo $part_1_output
+# part 2 solution is the amount of time it took to complete all tasks
 echo $time
-
-
-: << 'END_COMMENT'
-
-map node -> nodefader1, nodefader2, ... , nodefaderN
-
-fra noder i map med null fedre, finn neste i alfabetisk rekkefølge
-    skriv ut
-    fjern alle referanser til denne som fader
-    fjern entry
-END_COMMENT
-
-
-
-echo
-
-
-# XBEFLNGIRQUHPSJKVTYOCZDWMA
-
-
-
-
-
-
-
-
-
-
