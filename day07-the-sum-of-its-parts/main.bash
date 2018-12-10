@@ -148,6 +148,8 @@ while [[ ${#no_dependencies[@]} -gt 0 ]]; do
 
         if [[ "${worker_task[$i]}" != "0" ]]; then
             
+            # if worker time is greater than 1 -> just decrease
+            # if worker time is 1 (will be 0) -> remove task and reset worker
             if [[ ${worker_time[$i]} -gt 1 ]]; then
 
                 worker_time[$i]=$(( ${worker_time[$i]} - 1 ))
