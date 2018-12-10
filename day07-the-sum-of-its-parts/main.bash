@@ -31,12 +31,11 @@ setup_depends_on_map() {
     done <<< $(echo "$parsed_input")
 
     # initialize no_dependencies array with nodes that have no dependencies in input
-    for var in ${!depends_on_map[@]}; do
+    for var in "${!depends_on_map[@]}"; do
         dependencies="${depends_on_map[$var]}"
         for (( i=0; i<${#dependencies}; i++ )); do
             dependency=${dependencies:$i:1}
-            if [[ -z ${depends_on_map[$dependency]+_} ]] && 
-               [[ ! "${no_dependencies[@]}" =~ "${dependency}" ]]; then
+            if [[ -z ${depends_on_map[$dependency]+_} ]] && [[ ! ${no_dependencies[*]} =~ ${dependency} ]]; then
 
                 no_dependencies+=($dependency)
             fi
@@ -102,7 +101,7 @@ while [[ ${#no_dependencies[@]} -gt 0 ]]; do
         # if now doesn't have any dependencies, add to no_dependencies
         deps="${depends_on_map[$node]}"
         if [[ "${#deps}" == "0" ]]; then
-            unset depends_on_map[$node]
+            unset "depends_on_map[$node]"
             no_dependencies+=($node)
         fi
 
@@ -167,7 +166,7 @@ while [[ ${#no_dependencies[@]} -gt 0 ]]; do
                     # if now doesn't have any dads, add to no_dependencies
                     refs="${depends_on_map[$node]}"
                     if [[ "${#refs}" == "0" ]]; then
-                        unset depends_on_map[$node]
+                        unset "depends_on_map[$node]"
                         no_dependencies+=($node)
                     fi
 
@@ -186,10 +185,10 @@ while [[ ${#no_dependencies[@]} -gt 0 ]]; do
     done
 
     # try and assign tasks ready to be processed (those in no_dependencies) to a worker
-    for node in ${no_dependencies[@]}; do
+    for node in "${no_dependencies[@]}"; do
 
         # if a worker is not already working on this
-        if [[ ! "${worker_task[@]}" =~ "$node" ]]; then
+        if [[ ! ${worker_task[*]} =~ $node ]]; then
 
             # look through workers for one that is available
             for (( i=0; i<worker_num; i++ )); do
