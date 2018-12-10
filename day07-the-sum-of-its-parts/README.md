@@ -1,6 +1,6 @@
 # Day 7: The Sum of Its Parts
 
---- Part 1 ---
+## --- Part 1 ---
 
 You find yourself standing on a snow-covered coastline; apparently, you landed a little off course. The region is too hilly to see the North Pole from here, but you do spot some Elves that seem to be trying to unpack something that washed ashore. It's quite cold out, so you decide to risk creating a paradox by asking them for directions.
 
@@ -47,7 +47,7 @@ In what order should the steps in your instructions be completed?
 
 
 
---- Part 2 ---
+## --- Part 2 ---
 
 As you're about to begin construction, four of the Elves offer to help. "The sun will set soon; it'll go faster if we work together." Now, you need to account for multiple people working on steps simultaneously. If multiple steps are available, workers should still begin them in alphabetical order.
 

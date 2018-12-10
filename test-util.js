@@ -69,19 +69,21 @@ function makeTest(producer) {
         } catch (e) { 
             t.fail(e) 
         }
-        let output = await producer(dirpath)
-        output = output.split('\n').filter(output => output)
+        try {
+            var output = await producer(dirpath)
+            output = output.split('\n').filter(output => output)
+        } catch (e) {
+            t.fail(e)
+        }
 
         t.not(output.length, 0)
         t.true(output.length <= expected.length)
 
         for (let i = 0; i < output.length; ++i) {
-            t.is(output[i], expected[i], `Part${i+1}`)
+            t.is(output[i], expected[i])
+            t.log(`${output[i]} ${output[i] === expected[i]? '===' : '!=='} ${expected[i]} ${i+1} of ${expected.length}`)
         }
-
-        if (output.length && output.length !== expected.length) {
-            t.log(`Partial solution ${output.length} of ${expected.length}`)
-        }
+        t.pass()
     }
 }
 
