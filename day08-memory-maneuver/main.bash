@@ -14,7 +14,7 @@
 #   to be much of an issue.
 
 
-# read input_array as array
+# read input as array
 input_array=($(</dev/stdin))
 
 # This variable is used to hold the position in the input_array at any point. 
