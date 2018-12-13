@@ -82,9 +82,6 @@ function value_of_node() {
     local num_metadata=${input_array[$index]}
     ((index++))
 
-    # index i will store absolute reference to child number i
-    local absolute_child_references=()
-
     # index i will store value of child i
     local child_values=()
 
@@ -96,9 +93,6 @@ function value_of_node() {
 
         # prevent unnecessary subshell later by storing i+1
         local i_plus_one=$(( i + 1 ))
-
-        # store index of this child
-        absolute_child_references[$i_plus_one]=$index
 
         # call this function
         value_of_node
