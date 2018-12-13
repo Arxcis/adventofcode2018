@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# TODO: 
+# * replace () () and sed with plain space-separated arrays (done so far for debugability)
+# * clean up variable (funtion as well naming)
+# * http://rus.har.mn/blog/2010-07-05/subshells/
+
 # read input as array
 input=($(</dev/stdin))
 
@@ -24,10 +29,10 @@ function sum_metadata_for_node() {
 
     # for every child call this function recursively to read it
     for (( i=0; i<num_children; ++i )); do
+        
         child_ret=($(echo "$(sum_metadata_for_node $index)" | sed 's/(\([[:digit:]]*\)) (\([[:digit:]]*\))/\1 \2/'))
         child_sum=${child_ret[0]}
         child_index=${child_ret[1]}
-        sum=$(( child_sum + sum ))
         index=$(( child_index ))
         dbg+="[$index (added) $child_index]"
     done
