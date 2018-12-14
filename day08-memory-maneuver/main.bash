@@ -6,7 +6,8 @@
 #   (limited to 0 to 255..), using a subshell with echo, and avoiding subshells and using global 
 #   variables. All of these are bad.. The first option is out of question, the second is less 
 #   performant because it requires subshells (recursively!), and the third uses global variables. 
-#   This solution uses global variables without subshells for performance reasons. http://rus.har.mn/blog/2010-07-05/subshells/
+#   This solution uses global variables without subshells for performance reasons. 
+#   http://rus.har.mn/blog/2010-07-05/subshells/
 # * "ret" is a global variable that contains the return value of any function call. Because of 
 #   this all function calls are immediately followed up by checking the contents of this variable.
 
@@ -67,8 +68,8 @@ function sum_up_metadata() {
 ###############################################################################
 ### PART 2 FUNCTION
 ###
-### * Recursively traverses tree to find value of a given node as. Value of node 
-###   is defined in the task description
+### * Recursively traverses tree to find value of a given node as. Value of 
+###   node is defined in the task description
 ### * Uses global variables index, ret
 ###############################################################################
 function value_of_node() {
