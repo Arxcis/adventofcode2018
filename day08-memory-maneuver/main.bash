@@ -2,16 +2,13 @@
 
 ### Notes around solution:
 #
-# * I decided to go with recusion for this task. Bash has three ways to handle return values 
-#   from functions: using a return statement (limited to 0 to 255..), using a subshell with echo, 
-#   and avoiding subshells and using global variables. All of these are bad.. The first option is 
-#   out of question, the second is less performant because it requires subshells (recursively!), 
-#   and the third uses global variables. I went with using global variables without subshells for 
-#   performance reasons. http://rus.har.mn/blog/2010-07-05/subshells/
+# * Bash has three ways to handle return values from functions: using a return statement 
+#   (limited to 0 to 255..), using a subshell with echo, and avoiding subshells and using global 
+#   variables. All of these are bad.. The first option is out of question, the second is less 
+#   performant because it requires subshells (recursively!), and the third uses global variables. 
+#   This solution uses global variables without subshells for performance reasons. http://rus.har.mn/blog/2010-07-05/subshells/
 # * "ret" is a global variable that contains the return value of any function call. Because of 
-#   this all function calls are immidiatelly followed up by checking the contents of this variable.
-# * Bash hates datastructures, so I had to do the task on the input array itself. Didn't turn out 
-#   to be much of an issue.
+#   this all function calls are immediately followed up by checking the contents of this variable.
 
 
 # read input as array
