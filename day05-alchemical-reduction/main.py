@@ -27,7 +27,6 @@ def main():
             .replace(c.lower(), "")
             .replace(c.upper(), ""))
 
-        print(c, ":", new_len)
         if new_len < min_len:
             min_len = new_len
 
@@ -48,7 +47,8 @@ def fully_reacted_length(polymer):
         oldlen = newlen
         newlen = len(polymer)
 
-    return len(polymer)
+    # TODO Figure out why i need -1 here ? ????? - JSolsvik 15.12.18
+    return len(polymer)-1
 
 if __name__ == "__main__":
     main()
