@@ -29,11 +29,13 @@ int main(int argc, char** argv)
 
 
     // Calculates puzzle 2;
-    std::unordered_set<int> duplicates;
+    std::unordered_set<int> duplicates{};
+    constexpr int n262144 = 2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2;
+    duplicates.reserve(n262144);
     int current = 0;
     bool found = false;
 
-    // auto begin = std::chrono::steady_clock::now();
+    auto begin = std::chrono::steady_clock::now();
     while (!found)
     {
         for (const auto& var : input)
@@ -45,9 +47,9 @@ int main(int argc, char** argv)
             }
         }
     }
-    // auto end = std::chrono::steady_clock::now();
-       // std::cout << "T2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "us\n";
+    auto end = std::chrono::steady_clock::now();
+    std::cout << "T2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "us\n";
 
-    std::cout << current << '\n';
+    std::cout << current << " " << duplicates.size() <<'\n';
     return 0;
 }
