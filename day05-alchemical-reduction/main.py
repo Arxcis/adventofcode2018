@@ -1,25 +1,24 @@
 
 import fileinput
 import time
+import sys
 #
 # ------------- Part 1 ------------------
 #
-polymer_new = f"0{[line for line in fileinput.input()][0]}0"
-polymer_old = ""
+polymer = f"{[line for line in fileinput.input()][0]}"
+alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-while len(polymer_new) != len(polymer_old):
-    polymer_old = polymer_new
-    
-    a_generator = [i for i in polymer_old[0:len(polymer_old) - 2]]
-    b_generator = [i for i in polymer_old[1:len(polymer_old) - 1]]
-    c_generator = [i for i in polymer_old[2:len(polymer_old) - 0]]
+oldlen = 0
+newlen = len(polymer)
 
-    polymer_new = [b \
-        for a,b,c in zip(a_generator, b_generator, c_generator)\
-            if True\
-            and ord(b) + 32 != ord(c)\
-            and ord(c) + 32 != ord(b)\
-            and ord(a) + 32 != ord(b)\
-            and ord(b) + 32 != ord(a)]
+while oldlen != newlen:
+    for c in alphabet:
+        polymer = polymer.replace(f"{c}{c.upper()}", "")
+    for c in alphabet:
+        polymer = polymer.replace(f"{c.upper()}{c}", "")
 
-print(len(polymer_new)-2)
+    oldlen = newlen
+    newlen = len(polymer)
+    print(oldlen, newlen)
+
+print(len(polymer))
