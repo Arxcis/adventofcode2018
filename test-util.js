@@ -44,7 +44,7 @@ exports[main_js] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | node 
 /* C++ 17 */
 exports[main_cpp] = makeTest(async dirpath => {
 
-    await exec(`g++ -std=c++17 ${dirpath}/${main_cpp} -o ${dirpath}/${target_cpp}`)
+    await exec(`g++ -std=c++17 -O3 ${dirpath}/${main_cpp} -o ${dirpath}/${target_cpp}`)
     let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_cpp}`)
     await exec(`rm ${dirpath}/${target_cpp}`)
 
