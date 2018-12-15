@@ -18,7 +18,6 @@ int main(int argc, char** argv)
         input.push_back(atoi(line.c_str()));
     }
 
-
     // Calculates puzzle 1
     int total = 0;
     for (const auto& var : input)
@@ -40,7 +39,6 @@ int main(int argc, char** argv)
     int32_t current = 0;
     bool found = false;
 
-    auto begin = std::chrono::steady_clock::now();
     while (!found)
     {
         for (const auto& var : input)
@@ -56,9 +54,6 @@ int main(int argc, char** argv)
             bit_field[field_index] |= (0b1 << bit_index);
         }
     }
-    auto end = std::chrono::steady_clock::now();
-    std::cout << "T2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "us\n";
-
     std::cout << current <<'\n';
     return 0;
 }
