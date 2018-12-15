@@ -35,19 +35,19 @@ int main(int argc, char** argv)
         int right = INT_MIN; 
         int bottom = INT_MIN;
     };
-    auto rect = Rect{};
+    auto perim = Rect{};
     for (const Point& p: points) {
-        if (p.x < rect.left) {
-            rect.left = p.x;
+        if (p.x < perim.left) {
+            perim.left = p.x;
         }
-        if (p.x > rect.right) {
-            rect.right = p.x;
+        if (p.x > perim.right) {
+            perim.right = p.x;
         }
-        if (p.y < rect.top) {
-            rect.top = p.y;
+        if (p.y < perim.top) {
+            perim.top = p.y;
         }
-        if (p.y > rect.bottom) {
-            rect.bottom = p.y;
+        if (p.y > perim.bottom) {
+            perim.bottom = p.y;
         }
     }
 
@@ -56,8 +56,8 @@ int main(int argc, char** argv)
         int id = -1; 
         int distance = INT_MAX; 
     };
-    const auto WIDTH = rect.right - rect.left;
-    const auto HEIGHT = rect.bottom - rect.top;
+    const auto WIDTH = perim.right - perim.left;
+    const auto HEIGHT = perim.bottom - perim.top;
     auto grid = std::vector<std::vector<ManhattanDistance>>{};
     for (int y = 0; y < HEIGHT; ++y) {
         auto inner = std::vector<ManhattanDistance>{};
@@ -72,7 +72,9 @@ int main(int argc, char** argv)
         for (int x = 0; x < WIDTH; ++x) {
             for (int pindex = 0; pindex < points.size(); ++pindex) {
                 const auto& p = points[pindex];
-                const auto manhattan_distance = abs(p.x - x) + abs(p.y - y);
+                const auto manhattan_distance = 
+                    abs(p.x - (x+perim.left)) + abs(p.y - (y+perim.top));
+                    
                 if (manhattan_distance < grid[y][x].distance) {
                     grid[y][x] = ManhattanDistance{
                         pindex, 
@@ -134,12 +136,12 @@ int main(int argc, char** argv)
     //
     // ... sum up all distances
     int regionSize = 0;
-    for (int y = 0; y < HEIGHT; ++y) {
-        for (int x = 0; x < WIDTH; ++x) {
+    for (int y = perim.top; y < perim.bottom; ++y) {
+        for (int x = perim.left; x < perim.right; ++x) {
             int sum = 0;
             for (int pindex = 0; pindex < points.size(); ++pindex) {
                 const auto& p = points[pindex];
-                sum += abs(p.x - x) + abs(p.y - y);
+                sum += (abs(p.x - x) + abs(p.y - y));
             }
             if (sum < 10000) {
                 regionSize += 1;
