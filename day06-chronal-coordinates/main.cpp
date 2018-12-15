@@ -144,10 +144,6 @@ int main(int argc, char** argv)
             if (sum < 10000) {
                 regionSize += 1;
             }
-
-            if (sum == 0) {
-                printf("sum0\n");
-            }
         }
     }
     printf("%d\n", regionSize);
