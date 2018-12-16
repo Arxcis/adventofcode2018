@@ -7,12 +7,10 @@ before_install:
   - brew install bash
   - brew install gnu-sed --with-default-names
   - brew install rust
+  - npm i
 script:
-  - node generate.js
-  - node difftest.js
-
-before_cache:
-  - brew cleanup
+  - npm run generate
+  - npm run difftest
 cache:
   directories:
     - node_modules
