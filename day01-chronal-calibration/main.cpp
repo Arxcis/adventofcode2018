@@ -5,25 +5,27 @@
 int main()
 {
     std::vector<std::string> lines{};
-    for (std::string line; std::getline(std::cin, line);) {
-        lines.push_back(line);
+    for (std::string line; std::getline(std::cin, line);) 
+    {
+        lines.emplace_back(line);
     }
 
     std::string line;
     std::vector<int> input;
-    for (const auto& line: lines) {
-        input.push_back(atoi(line.c_str()));
+    for (const std::string& line: lines) 
+    {
+        input.emplace_back(atoi(line.c_str()));
     }
 
     //
     // Part1
     //
     int total = 0;
-    for (const auto& var : input)
+    for (const auto& var : input) 
     {
         total += var;
     }
-    std::cout << total << '\n';
+    printf("%d\n", total);
 
 
     //
@@ -41,7 +43,7 @@ int main()
         for (const auto& var : input)
         {
             current += var;
-            const int32_t field_index = (current + n524288) / 32;
+            const int32_t field_index = (current + n524288) >> 5;
             const int32_t bit_index = (current + n524288) % 32;
 
             if (bit_field[field_index] & (0b1 << bit_index)) {
@@ -51,6 +53,6 @@ int main()
             bit_field[field_index] |= (0b1 << bit_index);
         }
     }
-    std::cout << current <<'\n';
+    printf("%d\n", current);
     return 0;
 }
