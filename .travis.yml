@@ -7,7 +7,6 @@ before_install:
   - brew install bash
   - brew install gnu-sed --with-default-names
   - brew install rust
-  - npm i
 script:
   - npm run generate
   - npm run difftest
