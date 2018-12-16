@@ -26,53 +26,49 @@ exports.enabledLanguages = [
 // Interpreted languages
 //
 /* Bash 4.4 */
-exports[bash] = makeTest(dirpath =>
-    exec(`cat ${dirpath}/${input_file} | bash ${dirpath}/main.${bash}`))
+exports[bash] = makeTest(dirpath => exec(`\
+    cat ${dirpath}/${input_file} | bash ${dirpath}/main.${bash}`))
 
 /* Python 3.6 */
-exports[python] = makeTest(dirpath =>
-    exec(`cat ${dirpath}/${input_file} | python3 ${dirpath}/main.${python}`))
+exports[python] = makeTest(dirpath => exec(`\
+    cat ${dirpath}/${input_file} | python3 ${dirpath}/main.${python}`))
 
 /* Node 11 */
-exports[node] = makeTest(dirpath =>
-    exec(`cat ${dirpath}/${input_file} | node ${dirpath}/main.${node}`))
+exports[node] = makeTest(dirpath => exec(\
+    `cat ${dirpath}/${input_file} | node ${dirpath}/main.${node}`))
 
 //
 // Compiled languages
 //
 /* Go 1.11 */
 exports[go] = makeTestCompiled({
-    compiler: dirpath =>
-        exec(`go build  -o ${dirpath}/bin/main-${go} ${dirpath}/main.${go}`),
+    compiler: dirpath => exec(`\
+        go build  -o ${dirpath}/bin/main-${go} ${dirpath}/main.${go}`),
 
-    runner: dirpath => exec(`cat ${dirpath}/${input_file} | ${dirpath}/bin/main-${go}`),
+    runner: dirpath => exec(`\
+        cat ${dirpath}/${input_file} | ${dirpath}/bin/main-${go}`),
 });
 
 /* C++ 17 */
 exports[cpp] = makeTestCompiled({
-    compiler: dirpath => 
-        exec(`g++ -std=c++17 -O3 ${dirpath}/main.${cpp} -o ${dirpath}/bin/main-${cpp}`),
+    compiler: dirpath => exec(`\
+        g++ -std=c++17 -O3 ${dirpath}/main.${cpp} -o ${dirpath}/bin/main-${cpp}`),
 
-    runner: dirpath => exec(`cat ${dirpath}/${input_file} | ${dirpath}/main-${cpp}`),
+    runner: dirpath => exec(`\
+        cat ${dirpath}/${input_file} | ${dirpath}/bin/main-${cpp}`),
 })
 
 /* Rust */
 exports[rust] = makeTestCompiled({
-    compiler: dirpath => 
-        exec(`\
-cargo build\
-    --manifest-path ${dirpath}/main.${rust}/Cargo.toml\
-    --release\
-    --quiet`),
+    compiler: dirpath => exec(`\
+        cargo build\
+            --manifest-path ${dirpath}/main.${rust}/Cargo.toml\
+            --release\
+            --quiet`),
 
-    runner: async dirpath => {
-        let output = await exec(`\
-cat ${dirpath}/input |\
-    ${dirpath}/main.${rust}/target/release/advent_of_code*`);
-
-        await exec(`cargo clean --manifest-path ${dirpath}/main.${rust}/Cargo.toml`)
-        return output
-    }
+    runner: dirpath => exec(`\
+        cat ${dirpath}/input |\
+            ${dirpath}/main.${rust}/target/release/advent_of_code*`),
 })
 
 function makeTestCompiled({compiler, runner}) {
