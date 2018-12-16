@@ -10,4 +10,7 @@ before_install:
 script:
   - node generate.js
   - node difftest.js
+cache:
+  directories:
+    - node_modules
 
