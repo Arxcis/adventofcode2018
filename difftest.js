@@ -1,5 +1,5 @@
 const _exec = require('child_process').exec
-const { enabledFilenames } = require("./test-util.js")
+const { enabledLanguages } = require("./test-util.js")
 
 const main = async () => {
     let diff = await exec('git diff --name-only master\n').catch(err =>
@@ -8,8 +8,8 @@ const main = async () => {
 
     lines.forEach(async line => {
 
-        let match = enabledFilenames.some(name =>
-            line.match(`(day\\d\\d[^\\/]+\\/)(${name})`))
+        let match = enabledLanguages.some(language =>
+            line.match(`(day\\d\\d[^\\/]+\\/)main.(${language})`))
 
         if (!match) {
             return;
