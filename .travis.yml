@@ -10,7 +10,10 @@ before_install:
 script:
   - node generate.js
   - node difftest.js
+
+before_cache:
+  - brew cleanup
 cache:
   directories:
     - node_modules
-
+    - $HOME/Library/Caches/Homebrew
