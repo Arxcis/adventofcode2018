@@ -1,11 +1,8 @@
 #include <iostream>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
-#include <chrono>
-
-int main(int argc, char** argv)
+int main()
 {
     std::vector<std::string> lines{};
     for (std::string line; std::getline(std::cin, line);) {
@@ -18,7 +15,9 @@ int main(int argc, char** argv)
         input.push_back(atoi(line.c_str()));
     }
 
-    // Calculates puzzle 1
+    //
+    // Part1
+    //
     int total = 0;
     for (const auto& var : input)
     {
@@ -27,11 +26,9 @@ int main(int argc, char** argv)
     std::cout << total << '\n';
 
 
-    // Calculates puzzle 2;
-    //constexpr int n262144 = 2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2;
-    //std::unordered_set<int> duplicates{};
-    //duplicates.reserve(n262144);
-    
+    //
+    // Part 2
+    //
     constexpr int32_t n32768  = 2*2*2*2*2*2*2*2*2*2*2*2*2*2*2;
     constexpr int32_t n524288 = 2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2;
 
