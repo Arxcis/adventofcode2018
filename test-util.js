@@ -25,10 +25,6 @@ exports.enabledLanguages = [
 //
 // Interpreted languages
 //
-/* Go 1.11 */
-exports[go] = makeTest(dirpath =>
-    exec(`cat ${dirpath}/${input_file} | go run ${dirpath}/main.${go}`))
-
 /* Bash 4.4 */
 exports[bash] = makeTest(dirpath =>
     exec(`cat ${dirpath}/${input_file} | bash ${dirpath}/main.${bash}`))
@@ -44,24 +40,26 @@ exports[node] = makeTest(dirpath =>
 //
 // Compiled languages
 //
+/* Go 1.11 */
+exports[go] = makeTestCompiled({
+    compiler: dirpath =>
+        exec(`go build  -o ${dirpath}/bin/main-${go} ${dirpath}/main.${go}`),
+
+    runner: dirpath => exec(`cat ${dirpath}/${input_file} | ${dirpath}/bin/main-${go}`),
+});
+
 /* C++ 17 */
 exports[cpp] = makeTestCompiled({
-    compiler: async dirpath => 
-        await exec(`g++ -std=c++17 -O3 ${dirpath}/main.${cpp} -o ${dirpath}/main-${cpp}`),
+    compiler: dirpath => 
+        exec(`g++ -std=c++17 -O3 ${dirpath}/main.${cpp} -o ${dirpath}/bin/main-${cpp}`),
 
-    runner: async dirpath => {
-
-        let output = await exec(`cat ${dirpath}/${input_file} | ${dirpath}/main-${cpp}`)
-        await exec(`rm ${dirpath}/main-${cpp}`)
-
-        return output;
-    }
+    runner: dirpath => exec(`cat ${dirpath}/${input_file} | ${dirpath}/main-${cpp}`),
 })
 
 /* Rust */
 exports[rust] = makeTestCompiled({
-    compiler: async dirpath => 
-        await exec(`
+    compiler: dirpath => 
+        exec(`\
 cargo build\
     --manifest-path ${dirpath}/main.${rust}/Cargo.toml\
     --release\
@@ -81,8 +79,6 @@ function makeTestCompiled({compiler, runner}) {
     const runnerTest = makeTest(runner);
 
     return async (t, dirpath) => {
-        t.log('')
-
         const t0 = performance.now();
         try {
             await compiler(dirpath)
@@ -90,14 +86,8 @@ function makeTestCompiled({compiler, runner}) {
             t.fail(e)
         }
         const t1 = performance.now();
-        
-        const t2 = performance.now();
         await runnerTest(t, dirpath);
-        const t3 = performance.now();
-        t.log('')
         t.log(`Compiler: ${(t1 - t0).toPrecision(6)}ms`)
-        t.log(`Runner  : ${(t3 - t2).toPrecision(6)}ms`)
-        t.log('')
     }
 }
 
@@ -109,20 +99,24 @@ function makeTest(runner) {
         } catch (e) { 
             t.fail(e) 
         }
+
+        const t0 = performance.now();
         try {
             var output = await runner(dirpath)
             output = output.split('\n').filter(output => output)
         } catch (e) {
             t.fail(e)
         }
+        const t1 = performance.now();
 
         t.not(output.length, 0)
         t.true(output.length <= expected.length)
 
         for (let i = 0; i < output.length; ++i) {
             t.is(output[i], expected[i])
-            t.log(`${i+1}/${expected.length}: ${output[i]} ${output[i] === expected[i]? '===' : '!=='} ${expected[i]}`)
+            t.log(`${i+1}: ${output[i]} ${output[i] === expected[i]? '===' : '!=='} ${expected[i]}`)
         }
+        t.log(`Runner  : ${(t1 - t0).toPrecision(6)}ms`)
         t.pass()
     }
 }
