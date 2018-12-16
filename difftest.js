@@ -2,21 +2,23 @@ const _exec = require('child_process').exec
 const { enabledLanguages } = require("./test-util.js")
 
 const main = async () => {
-    let diff = await exec('git diff --name-only master\n').catch(err =>
-        {process.exitCode = 1})
+    let diff = await exec('git diff --name-only master\n')
+        .catch(err => { process.exitCode = 1 })
+
     let lines = diff.split('\n').filter(line => line)
 
     lines.forEach(async line => {
 
-        let match = enabledLanguages.some(language =>
-            line.match(`(day\\d\\d[^\\/]+\\/)main.(${language})`))
+        let match = enabledLanguages
+            .map(language => line.match(`(day\\d\\d[^\\/]+\\/)main.(${language})`))
+            .filter(match => match);
 
-        if (!match) {
+        if (match.length === 0) {
             return;
         }
-        let [_, day, language] = match
-        await exec(`npm run ${language} ${day}`).catch(err =>
-            {process.exitCode = 1})
+        let [_, day, language] = match[0]
+        await exec(`npm run ${language} ${day}`)
+            .catch(err => { process.exitCode = 1 })
     })
 }
 
