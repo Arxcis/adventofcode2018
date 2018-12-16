@@ -36,4 +36,6 @@ ${testableFiles.reduce((str, file) => {
 
     fs.writeFile(`${abspath}/test.js`, testFile, () =>
         console.log(`Generated ${dir.name}/test.js`))
+
+    fs.mkdir(`${abspath}/bin`, () => console.log(`Generated ${dir.name}/bin/`));
 })

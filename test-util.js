@@ -34,8 +34,8 @@ exports[python] = makeTest(dirpath => exec(`\
     cat ${dirpath}/${input_file} | python3 ${dirpath}/main.${python}`))
 
 /* Node 11 */
-exports[node] = makeTest(dirpath => exec(\
-    `cat ${dirpath}/${input_file} | node ${dirpath}/main.${node}`))
+exports[node] = makeTest(dirpath => exec(`\
+    cat ${dirpath}/${input_file} | node ${dirpath}/main.${node}`))
 
 //
 // Compiled languages
