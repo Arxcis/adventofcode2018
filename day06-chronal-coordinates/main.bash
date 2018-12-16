@@ -43,7 +43,6 @@ max_dist=$(( bottom_right_x - top_left_x + bottom_right_y - top_left_y ))
 # fill out map_closest_coordinate_id and determine inside_region_count by traversing search area 
 # while calculating manhattan distances to coordinates and determining closests coordinate
 for (( i=top_left_x; i<=bottom_right_x; ++i)); do
-    echo $i
     for (( j=top_left_y; j<=bottom_right_y; ++j )); do
 
         dot=-1
@@ -111,14 +110,14 @@ for (( i = 0; i < parsed_input_length; i += 2 )); do
 done
 
 # ("." could appear in finites. remove just to be sure)
-unset map_finites[.]
+unset 'map_finites[.]'
 
 # calculate area of finite coordinates
 for (( i=top_left_x; i<=bottom_right_x; i++ )); do
     for (( j=top_left_y; j<=bottom_right_y; j++ )); do
         closest_coordinate="${map_closest_coordinate_id[$i,$j]}"
         if [[ ${map_finites[$closest_coordinate]+_} ]]; then
-            map_finites[$closest_coordinate]=$(( map_finites[$closest_coordinate] + 1 ))
+            map_finites[$closest_coordinate]=$(( map_finites[\$closest_coordinate] + 1 ))
         fi
     done
 done
