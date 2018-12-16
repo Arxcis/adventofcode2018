@@ -35,21 +35,24 @@ int main(int argc, char** argv)
         int right = INT_MIN; 
         int bottom = INT_MIN;
     };
-    auto perim = Rect{};
-    for (const Point& p: points) {
-        if (p.x < perim.left) {
-            perim.left = p.x;
+    const auto perim = ([&points](){
+        auto _perim = Rect{};
+        for (const Point& p: points) {
+            if (p.x < _perim.left) {
+                _perim.left = p.x;
+            }
+            if (p.x > _perim.right) {
+                _perim.right = p.x;
+            }
+            if (p.y < _perim.top) {
+                _perim.top = p.y;
+            }
+            if (p.y > _perim.bottom) {
+                _perim.bottom = p.y;
+            }
         }
-        if (p.x > perim.right) {
-            perim.right = p.x;
-        }
-        if (p.y < perim.top) {
-            perim.top = p.y;
-        }
-        if (p.y > perim.bottom) {
-            perim.bottom = p.y;
-        }
-    }
+        return _perim;
+    })();
 
     // ...initialize grid within the perimeter
     struct ManhattanDistance { 
