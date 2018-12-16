@@ -4,23 +4,10 @@
 input=$(</dev/stdin)
 parsed_input=($(echo "$input" | sed 's/,//;s/\n//'))
 
-# Notes from my solve:
-# TODO: clean up before commit (if you're seeing this I did a booboo)
-: << 'END_COMMENT'
-a coordinate is finite if it does not have a coordinate on the edge of the search area
+# store length of parsed input
+parsed_input_length=${#parsed_input[@]}
 
-process:
-* find top left, top right -> defines area to search
-* for each x,y in search area find closests coordinate
-
-* count which of the coordinates have the highest number of locations associated with them (part 1)
-END_COMMENT
-
-input_length=${#parsed_input[@]}
-
-# determine search area
-input_length=${#parsed_input[@]}
-
+# stores the bounds of the area to search
 # initialize top left and bottom right to be the first coordinate
 # (just to have an actual coordinate to start with, will probably be overwritten)
 top_left_x=${parsed_input[0]}
@@ -28,8 +15,8 @@ top_left_y=${parsed_input[1]}
 bottom_right_x=${parsed_input[0]}
 bottom_right_y=${parsed_input[1]}
 
-
-for (( i=0; i<input_length; i+=2 )); do
+# determine bounds of search area
+for (( i=0; i<parsed_input_length; i+=2 )); do
     j=$(( i + 1 ))
 
     my_x=${parsed_input[$i]}
@@ -42,10 +29,8 @@ for (( i=0; i<input_length; i+=2 )); do
 
 done
 
-echo "DEBUG: $top_left_x $top_left_y $bottom_right_x $bottom_right_y"
-
-
-# TODO explain
+# map is used as a fake two-dimentional array. value map[i,j] ends up holding either the id of the 
+# coordinate that is closest, or a "." if multiple coordinates are closest
 declare -A map_closest_coordinate_id
 
 region_max=10000
@@ -55,17 +40,17 @@ inside_region_count=0
 # used as initial value of search for min
 max_dist=$(( bottom_right_x - top_left_x + bottom_right_y - top_left_y ))
 
-
+# fill out map_closest_coordinate_id and determine inside_region_count by traversing search area 
+# while calculating manhattan distances to coordinates and determining closests coordinate
 for (( i=top_left_x; i<=bottom_right_x; ++i)); do
     echo $i
     for (( j=top_left_y; j<=bottom_right_y; ++j )); do
-
 
         dot=-1
         min_dist=$max_dist
         total_manhattan=0
         
-        for (( k=0; k<input_length; k+=2 )); do
+        for (( k=0; k<parsed_input_length; k+=2 )); do
 
             l=$(( k + 1 ))
 
@@ -74,11 +59,9 @@ for (( i=top_left_x; i<=bottom_right_x; ++i)); do
             check_y=${parsed_input[$l]}
 
             # determine manhattan distance from i,j to check_x,check_y
-    
+            # (param expansion used to find absolute value)
             manhattan_x_component=$(( check_x - i ))
             manhattan_y_component=$(( check_y - j ))
-
-            # (absolute value using parameter expansion)
             manhattan=$(( ${manhattan_x_component#-} + ${manhattan_y_component#-} ))
 
             # if found new min dist -> update dot with id of coordinate and update min_dist
@@ -96,6 +79,8 @@ for (( i=top_left_x; i<=bottom_right_x; ++i)); do
 
         map_closest_coordinate_id[$i,$j]=$dot
 
+        # if the sum of manhattan distances is less than the maximum to be considered inside the 
+        # (part 2) region we count this location to be inside the region
         if [[ $total_manhattan -lt $region_max ]]; then
             ((inside_region_count++))
         fi
@@ -104,8 +89,9 @@ for (( i=top_left_x; i<=bottom_right_x; ++i)); do
 done
 
 
-# determine inifinites
-# map used for lookup and uniqueness
+# coordinates that have a location on the border of the search area that has it as it's closest 
+# coordinate is considered infinite
+# (map used as set. value (1) never used)
 declare -A map_infinites
 for (( i=top_left_x; i<=bottom_right_x; i++ )); do
     map_infinites[${map_closest_coordinate_id[$i,$top_left_y]}]=1
@@ -116,16 +102,16 @@ for (( i=top_left_y; i<=bottom_right_y; i++ )); do
     map_infinites[${map_closest_coordinate_id[$bottom_right_x,$i]}]=1
 done
 
-echo "infinites: ${!map_infinites[@]}"
-
-# finites is (all coordinates) - (infinites)
+# determine finites. a coordinate is finite if it is not infinite (is not in map_infinites)
 declare -A map_finites=()
-for (( i = 0; i < input_length; i += 2 )); do
+for (( i = 0; i < parsed_input_length; i += 2 )); do
     if [[ -z ${map_infinites[$i]+_} ]]; then
         map_finites[$i]=0
     fi
 done
 
+# ("." could appear in finites. remove just to be sure)
+unset map_finites[.]
 
 # calculate area of finite coordinates
 for (( i=top_left_x; i<=bottom_right_x; i++ )); do
@@ -137,12 +123,7 @@ for (( i=top_left_x; i<=bottom_right_x; i++ )); do
     done
 done
 
-echo "finites: "
-for var in "${!map_finites[@]}"; do
-    echo "$var ${map_finites[$var]}"
-done
-
-# find finite with max area
+# find finite with max area for part 1
 max_area=-1
 for area in "${map_finites[@]}"; do
     if [[ $area -gt $max_area ]]; then
@@ -150,5 +131,5 @@ for area in "${map_finites[@]}"; do
     fi
 done
 
-echo $max_area
-echo $inside_region_count
+echo "$max_area"
+echo "$inside_region_count"
