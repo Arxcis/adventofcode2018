@@ -1,49 +1,58 @@
 #include <iostream>
 #include <string>
-#include <set>
 #include <vector>
 
-int main(int argc, char** argv)
+int main()
 {
     std::vector<std::string> lines{};
-    for (std::string line; std::getline(std::cin, line);) {
-        lines.push_back(line);
+    for (std::string line; std::getline(std::cin, line);) 
+    {
+        lines.emplace_back(line);
     }
 
     std::string line;
     std::vector<int> input;
-    for (const auto& line: lines) {
-        input.push_back(atoi(line.c_str()));
+    for (const std::string& line: lines) 
+    {
+        input.emplace_back(atoi(line.c_str()));
     }
 
-    // Calculates puzzle 1
+    //
+    // Part1
+    //
     int total = 0;
-    for (auto var : input)
+    for (const auto& var : input) 
     {
         total += var;
     }
+    printf("%d\n", total);
 
-    std::cout << total << '\n';
 
+    //
+    // Part 2
+    //
+    constexpr int32_t n32768  = 2*2*2*2*2*2*2*2*2*2*2*2*2*2*2;
+    constexpr int32_t n524288 = 2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2*2;
 
-    // Calculates puzzle 2;
-    std::set<int> duplicates;
-    int current = 0;
+    int32_t bit_field[n32768] = {};
+    int32_t current = 0;
     bool found = false;
+
     while (!found)
     {
-        for (auto var : input)
+        for (const auto& var : input)
         {
             current += var;
+            const int32_t field_index = (current + n524288) >> 5;
+            const int32_t bit_index = (current + n524288) % 32;
 
-            if (duplicates.find(current) != duplicates.end()) {
-                std::cout << current << '\n';
+            if (bit_field[field_index] & (0b1 << bit_index)) {
                 found = true;
-                break;                
+                break;
             }
-            
-            duplicates.insert(current);
+            bit_field[field_index] |= (0b1 << bit_index);
         }
     }
+    printf("%d\n", current);
     return 0;
 }
