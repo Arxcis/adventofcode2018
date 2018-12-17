@@ -1,126 +1,160 @@
 #!/bin/bash
 
+###############################################################################
+### DOUBLY LINKED LIST IMPLEMENTATION
+###
+### Task requires lots of insertions and deletions, but no random access, so 
+### a doubly linked list is faster than an array. Bash does not have a built-in 
+### doubly linked list, and does not support pointers, so easiest way to 
+### achieve the behavior is with maps
+###############################################################################
 
+function reset_list() {  
 
+    unset map_n
+    unset map_p
+    declare -Ag map_n
+    declare -Ag map_p
 
+    current_id=0
+    next_id=1
 
+    # initially contains only the 0 value (as specified in the task)
+    map_v[0]=0
+    map_n[0]=0
+    map_p[0]=0
+}
 
+function inset_after_current() {
 
+    after=$current_id
+    value=$1
 
+    map_v[$next_id]=$value
 
-# https://unix.stackexchange.com/questions/328882/how-to-add-remove-an-element-to-from-the-array-in-bash
+    map_p[${map_n[$after]}]=$next_id
+
+    map_n[$next_id]=${map_n[$after]}
+    map_p[$next_id]=$after
+
+    map_n[$after]=$next_id
+
+    ((next_id++))
+}
+
+function delete_current_and_set_to_next() {
+
+    current_p=${map_p[$current_id]}
+    current_n=${map_n[$current_id]}
+    
+    map_n[$current_p]=$current_n
+    map_p[$current_n]=$current_p
+
+    unset map[$current_id]
+
+    current_id=$current_n
+}
+
+function clockwise() {
+    current_id="${map_n[$current_id]}"
+}
+
+function counter_clockwise() {
+    current_id="${map_p[$current_id]}"
+}
+
+function print_current() {
+    echo "${map_v[$current_id]}"
+}
+
+###############################################################################
+### MARBLE GAME
+###
+### Generic implementation used for both part 1 and 2. Uses the doubly 
+### linked list
+###############################################################################
+
+function play_game() {
+
+    num_players=$1
+    last_marble=$2
+    
+    # initialize loop varibles
+    local marble=1
+    local current_player=1
+
+    # stores score for each player
+    declare -A player_map
+
+    while [[ $marble -le $last_marble ]]; do
+
+        if (( !(marble % 23) )); then
+
+            counter_clockwise
+            counter_clockwise
+            counter_clockwise
+            counter_clockwise
+            counter_clockwise
+            counter_clockwise
+            counter_clockwise
+
+            local previous_score="${player_map[$current_player]}"
+            local deleted_marble=$(print_current)
+
+            player_map[$current_player]=$(( previous_score + marble + deleted_marble ))
+
+            delete_current_and_set_to_next
+
+        else
+
+            clockwise
+            inset_after_current $marble
+            clockwise
+
+        fi
+
+        ((marble++))
+
+        # move to next player. goes to player 1 when wrapping
+        ((current_player++))
+        if [[ $current_player -gt "$num_players" ]]; then
+            current_player=1
+        fi
+
+    done
+
+    # find winner
+    for score in "${player_map[@]}"; do
+        if [[ $score -gt $max_score ]]; then
+            max_score=$score
+        fi
+    done
+
+    echo "$max_score"
+}
+
+###############################################################################
+### PARSE INPUT
+###############################################################################
 
 input=$(</dev/stdin)
 parsed_input=($(echo "$input" | sed 's/^\([[:digit:]]*\) players; last marble is worth \([[:digit:]]*\) points$/\1 \2/'))
 
-
 num_players=${parsed_input[0]}
 last_marble=${parsed_input[1]}
 
-echo "${parsed_input[@]}"
+###############################################################################
+### PART 1
+###############################################################################
 
+reset_list
+echo "$(play_game $num_players $last_marble)"
 
-array=(0)
-current_index=0
-current_player=1
-marble=1
+###############################################################################
+### PART 2
+###
+### Just part 1 with last_marble * 100
+###############################################################################
 
-function inc_current_index() {
-    ((current_index++))
-    if [[ $current_index -ge "${#array[@]}" ]]; then
-        current_index=0
-    fi
-}
-
-function inc_current_player() {
-    ((current_player++))
-    if [[ $current_player -gt "$num_players" ]]; then
-        current_player=1
-    fi
-}
-
-
-declare -A player_map
-
-while [[ $marble -le $last_marble ]]; do
-
-
-
-    if (( !(marble % 23) )); then
-    
-        echo "yay index is $current_index tho (-7: $(( current_index - 7 )))"
-        current_index=$(( current_index - 7 ))
-
-        # (never happens??)
-        if [[ $current_index -lt 0 ]]; then
-            echo "array: ${array[@]}"
-            length=${#array[@]}
-            echo "OBS was $current_index (length is $length) (math: $(( current_index + length ))"
-            current_index=$(( current_index + length ))
-            echo "OBS $current_index"
-        fi
-
-        echo "$marble yay! (removed $current_index which was ${array[$current_index]})"
-
-        # give points to current_index player
-        previous_score="${player_map[$current_player]}"
-        removed_marble="${array[$current_index]}"
-        player_map[$current_player]=$(( previous_score + marble + removed_marble))
-        echo "player $current_player now has ${player_map[$current_player]} score [$previous_score + $marble + $removed_marble]"
-
-        # remove element at current_index by shifting array to the left after current_index
-        #length=${#array[@]}
-        #for (( i = current_index; i < length; ++i )); do
-        #    array[$i]="${array[$(( i + 1 ))]}"
-        #done
-        #length_minus_one=$(( length - 1 ))
-        #unset array[$length_minus_one]
-
-        #array=( "${array[@]:0:$(( current_index - 1 ))}" "${array[@]:$(( current_index ))}")
-
-        unset array[$current_index]
-        new_array=()
-        for value in ${array[@]}; do
-            new_array+=($value)
-        done
-        array=()
-        for value in ${new_array[@]}; do
-            array+=($value)
-        done
-
-        #echo "val: ${array[$current_index]}"
-
-
-    else
-
-        inc_current_index
-        inc_current_index
-        #echo "-->$current_index"
-        array=( "${array[@]:0:$current_index}" "$marble" "${array[@]:$current_index}" )
-        
-        # make space
-        #length="${#array[@]}"
-        #for (( i = current_index + 1; i <= length; ++i )); do
-        #    array[$i]=${array[$(( i - 1 ))]}
-        #done
-        #array[$current_index]=$marble
-
-    fi
-
-    #echo -e "[$current_player]->$current_index ($marble) \t${array[@]}"
-
-    inc_current_player
-    ((marble++))
-
-
-done
-
-# find winner
-max_score=-1
-for score in "${player_map[@]}"; do
-    if [[ $score -gt $max_score ]]; then
-        max_score=$score
-    fi
-done
-
-echo "$max_score"
+reset_list
+echo "$(play_game $num_players $((last_marble * 100 )))"

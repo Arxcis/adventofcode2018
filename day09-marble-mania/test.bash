@@ -91,8 +91,8 @@ input=$(</dev/stdin)
 parsed_input=($(echo "$input" | sed 's/^\([[:digit:]]*\) players; last marble is worth \([[:digit:]]*\) points$/\1 \2/'))
 
 
-num_players=${parsed_input[0]}
-last_marble=${parsed_input[1]}
+#num_players=10
+last_marble=1618
 
 map_v[0]=0
 map_n[0]=0
@@ -104,10 +104,10 @@ current_id=0
 marble=1
 
 
-current_player=1
+#current_player=1
 
 
-declare -A player_map
+#declare -A player_map
 
 while [[ $marble -le $last_marble ]]; do
 
@@ -124,13 +124,13 @@ while [[ $marble -le $last_marble ]]; do
         counter_clockwise
 
 
-        previous_score="${player_map[$current_player]}"
+        #previous_score="${player_map[$current_player]}"
         deleted_marble=$(print_current)
 
 
-        player_map[$current_player]=$(( previous_score + marble + deleted_marble ))
+        #player_map[$current_player]=$(( previous_score + marble + deleted_marble ))
 
-        echo "(player: $current_player)one to be deleted is $(print_current). score is $marble + $previous_score + $deleted_marble = ${player_map[$current_player]}"
+        echo -e "[$(print_current)]\tscore is marble:\t$marble + deleted:\t$deleted_marble = $(( marble + deleted_marble ))"
 
         delete_current_and_set_to_next
 
@@ -162,7 +162,7 @@ done
 # find winner
 max_score=-1
 for score in "${player_map[@]}"; do
-    echo "$score"
+    #echo "$score"
     if [[ $score -gt $max_score ]]; then
         max_score=$score
     fi
