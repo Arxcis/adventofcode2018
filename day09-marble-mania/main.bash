@@ -50,7 +50,7 @@ function delete_current_and_set_to_next() {
     map_n[$current_p]=$current_n
     map_p[$current_n]=$current_p
 
-    unset map[$current_id]
+    unset "map[$current_id]"
 
     current_id=$current_n
 }
@@ -99,7 +99,8 @@ function play_game() {
             counter_clockwise
 
             local previous_score="${player_map[$current_player]}"
-            local deleted_marble=$(print_current)
+            local deleted_marble
+            deleted_marble="$(print_current)"
 
             player_map[$current_player]=$(( previous_score + marble + deleted_marble ))
 
@@ -148,7 +149,7 @@ last_marble=${parsed_input[1]}
 ###############################################################################
 
 reset_list
-echo "$(play_game $num_players $last_marble)"
+play_game "$num_players" "$last_marble"
 
 ###############################################################################
 ### PART 2
@@ -157,4 +158,4 @@ echo "$(play_game $num_players $last_marble)"
 ###############################################################################
 
 reset_list
-echo "$(play_game $num_players $((last_marble * 100 )))"
+play_game "$num_players" "$((last_marble * 100 ))"
