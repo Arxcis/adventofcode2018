@@ -14,12 +14,12 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
  |----------|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|----|
  | Go   | x  | x  | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | C++      | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
- | Bash     | x  | x  | x  | x  | x  | x  | x  | x \* |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+ | Bash     | x  | x  | x  | x  | x  | x  | x  | x\* |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Python   |    | x  |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Rust     | x  |  x |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
  | Nodejs   |    |    | x  |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
 
-* \*: But part 2 **very** slow.
+\*: But part 2 **very** slow.
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
