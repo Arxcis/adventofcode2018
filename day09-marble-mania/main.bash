@@ -157,5 +157,8 @@ play_game "$num_players" "$last_marble"
 ### Just part 1 with last_marble * 100
 ###############################################################################
 
-reset_list
-play_game "$num_players" "$((last_marble * 100 ))"
+# Uncomment to start part 2 solve. commented out to prevent part 2 from timing 
+# out Travis. takes over 8 hours to solve (not yet let it run until completion)
+
+#reset_list
+#play_game "$num_players" "$((last_marble * 100 ))"
