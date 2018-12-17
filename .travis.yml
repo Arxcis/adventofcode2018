@@ -3,11 +3,17 @@ node_js: "node"
 os: osx
 env:
   - HOMEBREW_NO_AUTO_UPDATE=1
+  
 before_install:
-  - brew install bash
   - brew install gnu-sed --with-default-names
+  - brew install bash
   - brew install rust
 script:
-  - node generate.js
-  - node difftest.js
-
+  - npm run generate
+  - npm run difftest
+before_cache:
+cache:
+  directories:
+    - $HOME/Library/Caches/Homebrew
+    - /usr/local/Cellar/gnu-sed
+    - /usr/local/bin

@@ -1,0 +1,14 @@
+[[package]]
+name = "advent_of_code_2018_day_03"
+version = "0.1.0"
+dependencies = [
+ "grabinput 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "grabinput"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum grabinput 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "22799229c87c97ee7738fe819aa5a3e858a12a1498a56e5d46965e2bb286b522"

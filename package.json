@@ -1,14 +1,16 @@
 {
     "name": "adventofcode2018",
     "scripts": {
+        "difftest": "node difftest.js",
         "generate": "node generate.js",
+        "a": "ava",
         "all": "ava --verbose",
-        "bash": "ava --verbose --match='*.bash'",
-        "cpp": "ava --verbose --match='*.cpp'",
-        "go": "ava --verbose --match='*.go'",
-        "py": "ava --verbose --match='*.py'",
-        "rs": "ava --verbose --match='*.rs'",
-        "js": "ava --verbose --match='*.js'"
+        "bash": "ava --verbose --match='bash'",
+        "cpp": "ava --verbose --match='cpp'",
+        "go": "ava --verbose --match='go'",
+        "py": "ava --verbose --match='py'",
+        "js": "ava --verbose --match='js'",
+        "rs": "ava --verbose --match='rs'"
     },
     "devDependencies": {
         "ava": "1.0.0-rc.2"

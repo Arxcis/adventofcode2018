@@ -1,88 +1,118 @@
 const fs = require('fs')
 const _exec = require('child_process').exec
+const {performance} = require('perf_hooks');
 
-const inputFile = 'input'
-const outputFile = 'output'
-const main_go = 'main.go'
-const main_bash = 'main.bash'
-const main_py = 'main.py'
-const main_cpp = 'main.cpp'
-const main_rs = 'main.rs'
-const main_js = 'main.js'
-
-const target_rs = 'main-rs'
+const input_file = 'input'
+const output_file = 'output'
 const target_cpp = 'main-cpp'
 
+const go = 'go';
+const bash = 'bash';
+const python = 'py';
+const cpp = 'cpp';
+const rust = 'rs';
+const node = 'js';
 
-exports.enabledFilenames = [
-    main_go,
-    main_py,
-    main_cpp,
-    main_rs,
-    main_js,
-    main_bash
+exports.enabledLanguages = [
+    go,
+    bash,
+    python,
+    cpp,
+    rust,
+    node
 ]
 
 //
 // Interpreted languages
 //
-/* Go 1.11 */
-exports[main_go] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | go run ${dirpath}/${main_go}`))
-
 /* Bash 4.4 */
-exports[main_bash] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | bash ${dirpath}/${main_bash}`))
+exports[bash] = makeTest(dirpath => exec(`\
+    cat ${dirpath}/${input_file} | bash ${dirpath}/main.${bash}`))
 
 /* Python 3.6 */
-exports[main_py] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | python3 ${dirpath}/${main_py}`))
+exports[python] = makeTest(dirpath => exec(`\
+    cat ${dirpath}/${input_file} | python3 ${dirpath}/main.${python}`))
 
 /* Node 11 */
-exports[main_js] = makeTest(dirpath => exec(`cat ${dirpath}/${inputFile} | node ${dirpath}/${main_js}`))
+exports[node] = makeTest(dirpath => exec(`\
+    cat ${dirpath}/${input_file} | node ${dirpath}/main.${node}`))
 
 //
 // Compiled languages
 //
+/* Go 1.11 */
+exports[go] = makeTestCompiled({
+    compiler: dirpath => exec(`\
+        go build  -o ${dirpath}/bin/main-${go} ${dirpath}/main.${go}`),
+
+    runner: dirpath => exec(`\
+        cat ${dirpath}/${input_file} | ${dirpath}/bin/main-${go}`),
+});
+
 /* C++ 17 */
-exports[main_cpp] = makeTest(async dirpath => {
+exports[cpp] = makeTestCompiled({
+    compiler: dirpath => exec(`\
+        g++ -std=c++17 -O3 ${dirpath}/main.${cpp} -o ${dirpath}/bin/main-${cpp}`),
 
-    await exec(`g++ -std=c++17 ${dirpath}/${main_cpp} -o ${dirpath}/${target_cpp}`)
-    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_cpp}`)
-    await exec(`rm ${dirpath}/${target_cpp}`)
-
-    return output;
+    runner: dirpath => exec(`\
+        cat ${dirpath}/${input_file} | ${dirpath}/bin/main-${cpp}`),
 })
 
 /* Rust */
-exports[main_rs] = makeTest(async dirpath => {
+exports[rust] = makeTestCompiled({
+    compiler: dirpath => exec(`\
+        cargo build\
+            --manifest-path ${dirpath}/main.${rust}/Cargo.toml\
+            --release\
+            --quiet`),
 
-    await exec(`rustc ${dirpath}/${main_rs} -o ${dirpath}/${target_rs} -C debuginfo=0 -C opt-level=3`);
-    let output = await exec(`cat ${dirpath}/${inputFile} | ${dirpath}/${target_rs}`)
-    await exec(`rm ${dirpath}/${target_rs}`)
-
-    return output
+    runner: dirpath => exec(`\
+        cat ${dirpath}/input |\
+            ${dirpath}/main.${rust}/target/release/advent_of_code*`),
 })
 
-function makeTest(producer) {
+function makeTestCompiled({compiler, runner}) {
+    const runnerTest = makeTest(runner);
+
+    return async (t, dirpath) => {
+        const t0 = performance.now();
+        try {
+            await compiler(dirpath)
+        } catch (e) {
+            t.fail(e)
+        }
+        const t1 = performance.now();
+        await runnerTest(t, dirpath);
+        t.log(`Compiler: ${(t1 - t0).toPrecision(6)}ms`)
+    }
+}
+
+function makeTest(runner) {
     return async (t, dirpath) => {
         try { 
-            var expected = await readFile(`${dirpath}/${outputFile}`)
+            var expected = await readFile(`${dirpath}/${output_file}`)
             expected = expected.split('\n').filter(expected => expected)
         } catch (e) { 
             t.fail(e) 
         }
+
+        const t0 = performance.now();
         try {
-            var output = await producer(dirpath)
+            var output = await runner(dirpath)
             output = output.split('\n').filter(output => output)
         } catch (e) {
             t.fail(e)
         }
+        const t1 = performance.now();
 
         t.not(output.length, 0)
         t.true(output.length <= expected.length)
 
         for (let i = 0; i < output.length; ++i) {
             t.is(output[i], expected[i])
-            t.log(`${output[i]} ${output[i] === expected[i]? '===' : '!=='} ${expected[i]} ${i+1} of ${expected.length}`)
+            t.log(`${i+1}: ${output[i]} ${output[i] === expected[i]? '===' : '!=='} ${expected[i]}`)
         }
+        t.log(`Runner  : ${(t1 - t0).toPrecision(6)}ms`)
         t.pass()
     }
 }

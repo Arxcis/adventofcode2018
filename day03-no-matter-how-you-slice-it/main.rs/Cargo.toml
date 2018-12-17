@@ -1,6 +1,8 @@
 [package]
-name = "day1_all"
+name = "advent_of_code_2018_day_03"
 version = "0.1.0"
 authors = ["Meltinglava <meltinglavaoutland@gmail.com>"]
+edition = "2018"
 
 [dependencies]
+grabinput = "*"
