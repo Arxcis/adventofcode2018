@@ -3,6 +3,7 @@
     "scripts": {
         "difftest": "node difftest.js",
         "generate": "node generate.js",
+        "a": "ava",
         "all": "ava --verbose",
         "bash": "ava --verbose --match='bash'",
         "cpp": "ava --verbose --match='cpp'",
