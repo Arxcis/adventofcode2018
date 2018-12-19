@@ -1,4 +1,4 @@
-# Welcome to Advent of code 2018 - The many languages challenge!
+# Welcome to Advent of Code 2018 - The many languages challenge!
 
 Link: https://adventofcode.com/2018
 
@@ -22,7 +22,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
 \*: But part 2 **very** slow.
 
 ### General
-* There are no deadlines (You don't have to submit day01 on 01. desember 2018)
+* There are no deadlines (You don't have to submit day01 on 01. December 2018)
 * You may look at other's solutions, or you can do it on your own. Pick your challenge.
 
 ### Contributing
@@ -84,7 +84,7 @@ Generated day03-no-matter-how-you-slice-it/test.js
 Generated day04-respose-record/test.js
 Generated day05-alchemical-reduction/test.js
 ```
-Re-run everytime you add a new file
+Re-run every time you add a new file
 
 **Test all programs**
 ```
