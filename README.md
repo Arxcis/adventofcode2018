@@ -1,4 +1,4 @@
-# Welcome to Advent of code 2018 - The many languages challange!
+# Welcome to Advent of code 2018 - The many languages challenge!
 
 Link: https://adventofcode.com/2018
 
@@ -23,7 +23,7 @@ In this repo we try to solve the daily tasks in as many languages as possible. P
 
 ### General
 * There are no deadlines (You don't have to submit day01 on 01. desember 2018)
-* You may look at other's solutions, or you can do it on your own. Pick your challange.
+* You may look at other's solutions, or you can do it on your own. Pick your challenge.
 
 ### Contributing
 * To contribute make a pull request with your solution.
