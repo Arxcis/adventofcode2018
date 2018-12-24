@@ -90,4 +90,3 @@ int main() {
     int value_of_root_node = value_of(root, nodes);
     printf("%d\n", value_of_root_node);
 }
-    
