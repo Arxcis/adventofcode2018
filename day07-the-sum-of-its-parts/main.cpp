@@ -97,7 +97,9 @@ int main()
             auto unvisitedLettersCopy = unvisitedLetters;
             for (const char letter : unvisitedLettersCopy) {
                 bool foundAfter = false;
-                for (const auto& condition : conditions) foundAfter |= (!condition.unlocked && condition.after == letter);
+                for (const auto& condition : conditions) {
+                    foundAfter |= (!condition.unlocked && condition.after == letter);
+                }
                 // ...if not foundAfter in any after, means that this letter is safe to visit
                 if (!foundAfter) {
                     for (int i = 0; i < WORKER_COUNT; ++i) {
@@ -122,7 +124,9 @@ int main()
                     // ...worker completed task
                     if (workers[i] == 0) {
                         // ...set all conditions from this letter as unlocked
-                        for (auto& condition : conditions) condition.unlocked |= condition.before == task[i];
+                        for (auto& condition : conditions) {
+                            condition.unlocked |= condition.before == task[i];
+                        }
                     }
                 }
             }
