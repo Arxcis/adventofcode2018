@@ -7,9 +7,10 @@ struct Node {
     using id = int;
     std::vector<id> children;
     std::vector<int> metadata;
+    int value = 0;
 };
 
- Node walk_node(std::vector<Node>& nodes, std::stringstream& ss) {
+ Node make_node(std::vector<Node>& nodes, std::stringstream& ss) {
     
     Node node{};
     int child_count{};
@@ -19,7 +20,7 @@ struct Node {
 
     for (int i = 0; i < child_count; ++i) {
         node.children.emplace_back(nodes.size());
-        nodes.emplace_back(walk_node(nodes, ss));
+        nodes.emplace_back(make_node(nodes, ss));
     }
 
     for (int i = 0; i < metadata_count; ++i) {
@@ -48,7 +49,7 @@ int main() {
     //
     auto nodes = std::vector<Node>{};
     std::stringstream ss(input);
-    nodes.emplace_back(walk_node(nodes, ss));
+    nodes.emplace_back(make_node(nodes, ss));
 
     int sum = 0;
     for (const auto& node: nodes) {
@@ -57,7 +58,7 @@ int main() {
         }
     }
     printf("%d\n", sum);
-    
+
     //
     // Part 2:
     //
