@@ -16,6 +16,8 @@ for (( i = 0; i < input_initial_state_length; ++i )); do
     state_map["$i"]="$pot_state"
 done
 
+ret=-1
+
 
 # build rule map
 # using map as set
@@ -25,15 +27,24 @@ while read -r rule; do
 done < <(echo "$input_rules")
 
 
+function sum_plant_numbers() {
+    plant_number_sum=0
+    for plant_number in "${!state_map[@]}"; do
+        if [[ ${state_map[$plant_number]} == '#' ]]; then
+            (( plant_number_sum+=plant_number ))
+        fi
+    done
+
+    ret=$plant_number_sum
+}
+
+
 
 buffer="....."
 buffer_length=5
 
-echo "0: $input_initial_state"
-
 fifty_billion=50000000000
 for (( generation = 1; generation <= fifty_billion; ++generation )); do
-    printf "$generation: "
     recurring=true
     for (( i = range_start - 2; i <= range_end + 2; ++i )); do
 
@@ -53,13 +64,11 @@ for (( generation = 1; generation <= fifty_billion; ++generation )); do
             state_map[$i]="."
         fi
 
-        printf "${state_map[$i]}"
         if [[ ${state_map[$i]} != ${buffer:1:1} ]]; then
             recurring=false
         fi
 
     done
-    echo;
 
 
     range_start=$(( range_start - 2 ))
@@ -72,26 +81,27 @@ for (( generation = 1; generation <= fifty_billion; ++generation )); do
         ((range_end--))
     done
 
+    if [[ $generation -eq 20 ]]; then
+        #butwithout50billion... :p
+        sum_plant_numbers
+        echo "$ret"
+    fi
+
     if $recurring; then
-        echo "RECURRING"
+        sum_plant_numbers
+        number_of_plants=0
+        for pot_state in "${state_map[@]}"; do
+            if [[ $pot_state == "#" ]]; then
+                ((number_of_plants++))
+            fi
+        done
+        echo "$(( ret + number_of_plants*(50000000000 - generation) ))"
         break
     fi
 
 done;
 
-echo "$generation"
 
-# sum up numbers of pots containing plants
-plant_number_sum=0
-for plant_number in "${!state_map[@]}"; do
-    if [[ ${state_map[$plant_number]} == '#' ]]; then
-        plant_number=$(( plant_number + fifty_billion - generation ))
-        echo $plant_number
-        (( plant_number_sum+=plant_number ))
-    fi
-done
-
-echo "$plant_number_sum"
 
 
 : << 'END_COMMENT'
