@@ -29,7 +29,7 @@ function trim_range() {
 # (uses $ret variable)
 function sum_plant_numbers() {
 
-    plant_number_sum=0
+    local plant_number_sum=0
     for plant_number in "${!state_map[@]}"; do
         if [[ ${state_map[$plant_number]} == '#' ]]; then
             (( plant_number_sum+=plant_number ))
@@ -147,11 +147,11 @@ for (( generation = 1; generation <= fifty_billion; ++generation )); do
 
         # set recurring flags to false if can prove that they cannot be true
 
-        if [[ ${state_map[$i]} != ${buffer:1:1} ]]; then
+        if [[ ${state_map[$i]} != "${buffer:1:1}" ]]; then
             recurring_right=false
         fi
 
-        if [[ ${state_map[$i]} != ${buffer:-1:1} ]]; then
+        if [[ ${state_map[$i]} != "${buffer:-1:1}" ]]; then
             recurring_left=false
         fi
 
