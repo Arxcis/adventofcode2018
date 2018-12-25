@@ -1,6 +1,6 @@
 # Day 8: Memory Maneuver
 
-## --- Part 1 ---
+## Part 1
 
 The sleigh is much easier to pull than you'd expect for something its weight. Unfortunately, neither you nor the Elves know which way the North Pole is from here.
 
@@ -41,7 +41,7 @@ The first check done on the license file is to simply add up all of the metadata
 
 What is the sum of all metadata entries?
 
-## --- Part 2 ---
+## Part 2
 
 The second check is slightly more complicated: you need to find the value of the root node (A in the example above).
 
