@@ -1,5 +1,34 @@
 #!/bin/bash
 
+function sort_pos() {
+
+    local i
+    local j
+
+    # sort by row
+    local pos_length="${#pos_row[@]}"
+    for (( i = 0; i < pos_length; ++i )); do
+        local min_index=$i
+        for (( j = i + 1; j < pos_length; ++j )); do
+            if [[ ${pos_row[$j]} -le ${pos_row[$min_index]} ]] &&
+               [[ ${pos_col[$j]} -lt ${pos_col[$min_index]} ]]; then
+                min_index=$j
+            fi
+        done
+
+        local tmp=${pos_row[$i]}
+        pos_row[$i]=${pos_row[$min_index]}
+        pos_row[$min_index]=$tmp
+
+        local tmp=${pos_col[$i]}
+        pos_col[$i]=${pos_col[$min_index]}
+        pos_col[$min_index]=$tmp
+
+    done
+
+}
+
+
 input="$(</dev/stdin)"
 
 declare -A track_map
@@ -7,6 +36,9 @@ declare -A track_map
 next_cart_number_to_assign=0
 
 number_of_carts=0
+
+pos_row=()
+pos_col=()
 
 # IFS= to preserve leading spaces
 row=0
@@ -29,6 +61,9 @@ while IFS= read -r line; do
                 ;;
 
             \>|\<|^|v)
+
+                pos_row+=($row)
+                pos_col+=($col)
 
                 ((number_of_carts++))
 
@@ -55,6 +90,9 @@ while IFS= read -r line; do
     ((row++))
 
 done < <(echo "$input")
+
+echo "${pos_row[@]}"
+echo "${pos_col[@]}"
 
 row_length="$row"
 col_length="$max_length_seen"
@@ -88,9 +126,13 @@ function print_track_map() {
 
 tick=0
 while [[ $number_of_carts -gt 1 ]]; do
-    for (( row = 0; row < row_length; ++row )); do
 
-        for (( col = 0; col < col_length; ++col )); do
+    pos_length=${#pos_row[@]}
+    for (( i = 0; i < pos_length; ++i )); do
+
+            row=${pos_row[$i]}
+            col=${pos_col[$i]}
+            echo "$row,$col"
 
             if [[ ${track_map[$row,$col]+_} ]]; then
                 
@@ -232,11 +274,55 @@ while [[ $number_of_carts -gt 1 ]]; do
                         esac
 
                         if $collision_found; then
+
+                            for (( pos_i = i; pos_i < pos_length - 1; ++pos_i )); do
+                                pos_row[$pos_i]=${pos_row[$(( pos_i + 1 ))]} 
+                                pos_col[$pos_i]=${pos_col[$(( pos_i + 1 ))]} 
+                            done
+                            unset "pos_row[$(( pos_length - 1))]"
+                            unset "pos_col[$(( pos_length - 1))]"
+                            pos_length="${#pos_row[@]}"
+                            echo "POSLENGTH NOW $pos_length"
+                            ((--i))
+
+                            to_delete=-1
+                            for (( pos_i = 0; pos_i < pos_length; ++pos_i )); do
+                                if [[ ${pos_row[$pos_i]} -eq $next_row ]] &&
+                                   [[ ${pos_col[$pos_i]} -eq $next_col ]]; then
+
+                                    to_delete=$pos_i 
+
+                                    break
+                                    fi
+                            done
+
+                            if [[ $to_delete -eq -1 ]]; then
+                                
+                                echo "DIDN'T FIND WHAT TO DELETE"
+                                exit
+                            fi
+
+                            for (( pos_i = to_delete; pos_i < pos_length - 1; ++pos_i )); do
+                                pos_row[$pos_i]=${pos_row[$(( pos_i + 1 ))]} 
+                                pos_col[$pos_i]=${pos_col[$(( pos_i + 1 ))]} 
+                            done
+                            unset "pos_row[$(( pos_length - 1))]"
+                            unset "pos_col[$(( pos_length - 1))]"
+                            pos_length="${#pos_row[@]}"
+                            echo "POSLENGTH NOW $pos_length"
+                            if [[ $to_delete -lt $i ]]; then
+                                ((--i))
+                            fi
+
+
+
                             track_map[$row,$col]="$underlying_track"
                             next_underlying_track=($next_underlying_track)
                             next_underlying_track=${next_underlying_track[2]}
                             track_map[$next_row,$next_col]="$next_underlying_track"
                         else
+                            pos_row[$i]=$next_row
+                            pos_col[$i]=$next_col
                             track_map[$row,$col]="$underlying_track"
                             track_map[$next_row,$next_col]="$next_dir $next_intersection_dir $next_underlying_track $tick"
                         fi
@@ -253,14 +339,15 @@ while [[ $number_of_carts -gt 1 ]]; do
 
             fi
             
-        done
-
+        
     done
+
+    sort_pos
 
     if [[ $number_of_carts -eq 1 ]]; then
         for xy in "${!track_map[@]}"; do
             if [[ ${track_map[$xy]} =~ [\<\>^v] ]]; then
-                echo "${xy#*,},${xy%,*}"
+                echo "answer: ${xy#*,},${xy%,*}"
             fi
         done
     fi
