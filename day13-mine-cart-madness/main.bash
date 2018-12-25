@@ -6,6 +6,8 @@ declare -A track_map
 
 next_cart_number_to_assign=0
 
+number_of_carts=0
+
 # IFS= to preserve leading spaces
 row=0
 max_length_seen=0
@@ -27,6 +29,8 @@ while IFS= read -r line; do
                 ;;
 
             \>|\<|^|v)
+
+                ((number_of_carts++))
 
                 underlying_track="-"
                 if [[ $current_xy_of_input =~ [v|^] ]]; then
@@ -83,8 +87,7 @@ function print_track_map() {
 }
 
 tick=0
-collision_found=false
-while ! $collision_found; do
+while [[ $number_of_carts -gt 1 ]]; do
     for (( row = 0; row < row_length; ++row )); do
 
         for (( col = 0; col < col_length; ++col )); do
@@ -134,6 +137,7 @@ while ! $collision_found; do
                         # look ahead 
                         next_dir=$dir
                         next_intersection_dir=$intersection_dir
+                        collision_found=false
                         case $next_underlying_track in
                             -|\|)
                                 # do nothing
@@ -223,13 +227,22 @@ while ! $collision_found; do
                                 *)
                                     echo "COLLISION AT $next_col,$next_row"
                                     collision_found=true
+                                    ((number_of_carts-=2))
                                     ;;
                         esac
 
+                        if $collision_found; then
+                            track_map[$row,$col]="$underlying_track"
+                            next_underlying_track=($next_underlying_track)
+                            next_underlying_track=${next_underlying_track[2]}
+                            track_map[$next_row,$next_col]="$next_underlying_track"
+                        else
+                            track_map[$row,$col]="$underlying_track"
+                            track_map[$next_row,$next_col]="$next_dir $next_intersection_dir $next_underlying_track $tick"
+                        fi
+
                         
 
-                        track_map[$row,$col]="$underlying_track"
-                        track_map[$next_row,$next_col]="$next_dir $next_intersection_dir $next_underlying_track $tick"
 
                         #echo "NEXT for cart! $next_row,$next_col $next_dir,$next_intersection_dir $next_underlying_track $tick"
 
@@ -244,10 +257,18 @@ while ! $collision_found; do
 
     done
 
+    if [[ $number_of_carts -eq 1 ]]; then
+        for xy in "${!track_map[@]}"; do
+            if [[ ${track_map[$xy]} =~ [\<\>^v] ]]; then
+                echo "${xy#*,},${xy%,*}"
+            fi
+        done
+    fi
+
     #print_track_map
 
     #sleep .2
-    echo "---------"
+    echo "--------- $tick $number_of_carts"
     ((tick++))
 done
 
