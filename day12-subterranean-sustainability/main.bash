@@ -63,7 +63,10 @@ for (( i = 0; i < input_initial_state_length; ++i )); do
 done
 
 # set initial range and trim using util function
-# range_start and range_end stores the plant_numbers of the left-most and right-most plant. This is done to store what range of pots we should look at while calculating the next generation.
+#
+# range_start and range_end stores the plant_numbers of the left-most and right-most 
+# plant. This is done to store what range of pots we should look at while calculating 
+# the next generation.
 range_start=0
 range_end=$(( input_initial_state_length - 1 ))
 trim_range
@@ -95,6 +98,9 @@ done < <(echo "$input_rules")
 ### This solve assumes that:
 ###   1. A recurring pattern exists for part 2
 ###   2. No rule like "..... => #" exist
+### 
+### NOTE: not tested with input that shifts to the left
+### TODO: support shift of two (which I think is possible?)
 ###############################################################################
 
 
@@ -140,8 +146,6 @@ for (( generation = 1; generation <= fifty_billion; ++generation )); do
         fi
 
         # set recurring flags to false if can prove that they cannot be true
-        # NOTE: not tested with input that shifts to the left
-        # TODO: support shift of two (which I think is possible?)
 
         if [[ ${state_map[$i]} != ${buffer:1:1} ]]; then
             recurring_right=false
