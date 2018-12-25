@@ -140,6 +140,7 @@ for (( generation = 1; generation <= fifty_billion; ++generation )); do
         fi
 
         # set recurring flags to false if can prove that they cannot be true
+        # NOTE: not tested with input that shifts to the left
         # TODO: support shift of two (which I think is possible?)
 
         if [[ ${state_map[$i]} != ${buffer:1:1} ]]; then
