@@ -1,58 +1,63 @@
 #!/bin/bash
 
-function sort_pos() {
+###############################################################################
+### UTIL
+###############################################################################
+
+number_of_carts=0
+cart_pos_row=()
+cart_pos_col=()
+next_cart_number_to_assign=0
+
+function sort_cart_pos() {
 
     local i
     local j
 
-    # sort by row
-    local pos_length="${#pos_row[@]}"
-    for (( i = 0; i < pos_length; ++i )); do
+    # sort by row and col (so that looping through the arrays read from left 
+    # to right, top to bottom)
+    for (( i = 0; i < number_of_carts; ++i )); do
         local min_index=$i
-        for (( j = i + 1; j < pos_length; ++j )); do
-            if [[ ${pos_row[$j]} -le ${pos_row[$min_index]} ]] &&
-               [[ ${pos_col[$j]} -lt ${pos_col[$min_index]} ]]; then
+        for (( j = i + 1; j < number_of_carts; ++j )); do
+            if [[ ${cart_pos_row[$j]} -le ${cart_pos_row[$min_index]} ]] &&
+               [[ ${cart_pos_col[$j]} -lt ${cart_pos_col[$min_index]} ]]; then
                 min_index=$j
             fi
         done
 
-        local tmp=${pos_row[$i]}
-        pos_row[$i]=${pos_row[$min_index]}
-        pos_row[$min_index]=$tmp
+        local tmp=${cart_pos_row[$i]}
+        cart_pos_row[$i]=${cart_pos_row[$min_index]}
+        cart_pos_row[$min_index]=$tmp
 
-        local tmp=${pos_col[$i]}
-        pos_col[$i]=${pos_col[$min_index]}
-        pos_col[$min_index]=$tmp
+        local tmp=${cart_pos_col[$i]}
+        cart_pos_col[$i]=${cart_pos_col[$min_index]}
+        cart_pos_col[$min_index]=$tmp
 
     done
 
 }
 
+###############################################################################
+### PARSE INPUT
+###############################################################################
 
 input="$(</dev/stdin)"
 
 declare -A track_map
-
-next_cart_number_to_assign=0
-
-number_of_carts=0
-
-pos_row=()
-pos_col=()
 
 # IFS= to preserve leading spaces
 row=0
 max_length_seen=0
 while IFS= read -r line; do
 
-    #echo "$line"
-    length="${#line}"
+    line_length="${#line}"
 
-    if [[ $length -gt $max_length_seen ]]; then
-        max_length_seen="$length"
+    # keep track of maximum width of input (even though is probably consistent)
+    if [[ $line_length -gt $max_length_seen ]]; then
+        max_length_seen="$line_length"
     fi
 
-    for (( col = 0; col < length; ++col )); do
+    for (( col = 0; col < line_length; ++col )); do
         current_xy_of_input="${line:$col:1}"
         case "$current_xy_of_input" in
 
@@ -62,8 +67,8 @@ while IFS= read -r line; do
 
             \>|\<|^|v)
 
-                pos_row+=($row)
-                pos_col+=($col)
+                cart_pos_row+=($row)
+                cart_pos_col+=($col)
 
                 ((number_of_carts++))
 
@@ -91,48 +96,20 @@ while IFS= read -r line; do
 
 done < <(echo "$input")
 
-echo "${pos_row[@]}"
-echo "${pos_col[@]}"
-
-row_length="$row"
-col_length="$max_length_seen"
-
-echo "$row_length, $col_length"
+echo "${cart_pos_row[@]}"
+echo "${cart_pos_col[@]}"
 
 
 
-function print_track_map() {
-    local row
-    local col
-    for (( row = 0; row < row_length; ++row )); do
-        for (( col = 0; col < col_length; ++col )); do
-            local current=${track_map[$row,$col]}
-            case $current in
-                \<|\>|v\^)
-                    array=($current)
-                    printf ${array[0]}
-                    ;;
-                "")
-                    printf " "
-                    ;;
-                *)
-                    printf $current
-            esac
-        done
-        echo;
-    done 
-
-}
 
 tick=0
 while [[ $number_of_carts -gt 1 ]]; do
 
-    pos_length=${#pos_row[@]}
-    for (( i = 0; i < pos_length; ++i )); do
+    for (( i = 0; i < number_of_carts; ++i )); do
 
-            row=${pos_row[$i]}
-            col=${pos_col[$i]}
-            echo "fetched $row,$col and i is $i"
+            row=${cart_pos_row[$i]}
+            col=${cart_pos_col[$i]}
+            #echo "fetched $row,$col and i is $i"
 
             if [[ ${track_map[$row,$col]+_} ]]; then
                 
@@ -269,26 +246,25 @@ while [[ $number_of_carts -gt 1 ]]; do
                                 *)
                                     echo "COLLISION AT $next_row,$next_col"
                                     collision_found=true
-                                    ((number_of_carts-=2))
                                     ;;
                         esac
 
                         if $collision_found; then
 
-                            for (( pos_i = i; pos_i < pos_length - 1; ++pos_i )); do
-                                pos_row[$pos_i]=${pos_row[$(( pos_i + 1 ))]} 
-                                pos_col[$pos_i]=${pos_col[$(( pos_i + 1 ))]} 
+                            for (( pos_i = i; pos_i < number_of_carts - 1; ++pos_i )); do
+                                cart_pos_row[$pos_i]=${cart_pos_row[$(( pos_i + 1 ))]} 
+                                cart_pos_col[$pos_i]=${cart_pos_col[$(( pos_i + 1 ))]} 
                             done
-                            unset "pos_row[$(( pos_length - 1))]"
-                            unset "pos_col[$(( pos_length - 1))]"
-                            pos_length="${#pos_row[@]}"
+                            unset "cart_pos_row[$(( pos_length - 1))]"
+                            unset "cart_pos_col[$(( pos_length - 1))]"
+                            pos_length="${#cart_pos_row[@]}"
                             echo "POSLENGTH NOW $pos_length"
                             ((--i))
 
                             to_delete=-1
-                            for (( pos_i = 0; pos_i < pos_length; ++pos_i )); do
-                                if [[ ${pos_row[$pos_i]} -eq $next_row ]] &&
-                                   [[ ${pos_col[$pos_i]} -eq $next_col ]]; then
+                            for (( pos_i = 0; pos_i < number_of_carts; ++pos_i )); do
+                                if [[ ${cart_pos_row[$pos_i]} -eq $next_row ]] &&
+                                   [[ ${cart_pos_col[$pos_i]} -eq $next_col ]]; then
 
                                     to_delete=$pos_i 
 
@@ -302,13 +278,13 @@ while [[ $number_of_carts -gt 1 ]]; do
                                 exit
                             fi
 
-                            for (( pos_i = to_delete; pos_i < pos_length - 1; ++pos_i )); do
-                                pos_row[$pos_i]=${pos_row[$(( pos_i + 1 ))]} 
-                                pos_col[$pos_i]=${pos_col[$(( pos_i + 1 ))]} 
+                            for (( pos_i = to_delete; pos_i < number_of_carts - 1; ++pos_i )); do
+                                cart_pos_row[$pos_i]=${cart_pos_row[$(( pos_i + 1 ))]} 
+                                cart_pos_col[$pos_i]=${cart_pos_col[$(( pos_i + 1 ))]} 
                             done
-                            unset "pos_row[$(( pos_length - 1))]"
-                            unset "pos_col[$(( pos_length - 1))]"
-                            pos_length="${#pos_row[@]}"
+                            unset "cart_pos_row[$(( number_of_carts - 1))]"
+                            unset "cart_pos_col[$(( number_of_carts - 1))]"
+                            ((number_of_carts-=2))
                             echo "POSLENGTH NOW $pos_length"
                             if [[ $to_delete -le $i ]]; then
                                 ((--i))
@@ -322,19 +298,13 @@ while [[ $number_of_carts -gt 1 ]]; do
                             track_map[$next_row,$next_col]="$next_underlying_track"
 
 
-                            echo "${pos_row[@]}"
+                            echo "${cart_pos_row[@]}"
                         else
-                            pos_row[$i]=$next_row
-                            pos_col[$i]=$next_col
+                            cart_pos_row[$i]=$next_row
+                            cart_pos_col[$i]=$next_col
                             track_map[$row,$col]="$underlying_track"
                             track_map[$next_row,$next_col]="$next_dir $next_intersection_dir $next_underlying_track $tick"
                         fi
-
-                        
-
-
-                        #echo "NEXT for cart! $next_row,$next_col $next_dir,$next_intersection_dir $next_underlying_track $tick"
-
 
                     fi
 
@@ -345,10 +315,10 @@ while [[ $number_of_carts -gt 1 ]]; do
         
     done
 
-    sort_pos
+    sort_cart_pos
 
     if [[ $number_of_carts -eq 1 ]]; then
-        echo "answer: ${pos_col[0]},${pos_row[0]}"
+        echo "answer: ${cart_pos_col[0]},${cart_pos_row[0]}"
     fi
 
     #print_track_map
