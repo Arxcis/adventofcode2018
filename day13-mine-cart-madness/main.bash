@@ -132,7 +132,7 @@ while [[ $number_of_carts -gt 1 ]]; do
 
             row=${pos_row[$i]}
             col=${pos_col[$i]}
-            echo "$row,$col"
+            echo "fetched $row,$col and i is $i"
 
             if [[ ${track_map[$row,$col]+_} ]]; then
                 
@@ -267,7 +267,7 @@ while [[ $number_of_carts -gt 1 ]]; do
 
                                 ;;
                                 *)
-                                    echo "COLLISION AT $next_col,$next_row"
+                                    echo "COLLISION AT $next_row,$next_col"
                                     collision_found=true
                                     ((number_of_carts-=2))
                                     ;;
@@ -310,7 +310,7 @@ while [[ $number_of_carts -gt 1 ]]; do
                             unset "pos_col[$(( pos_length - 1))]"
                             pos_length="${#pos_row[@]}"
                             echo "POSLENGTH NOW $pos_length"
-                            if [[ $to_delete -lt $i ]]; then
+                            if [[ $to_delete -le $i ]]; then
                                 ((--i))
                             fi
 
@@ -320,6 +320,9 @@ while [[ $number_of_carts -gt 1 ]]; do
                             next_underlying_track=($next_underlying_track)
                             next_underlying_track=${next_underlying_track[2]}
                             track_map[$next_row,$next_col]="$next_underlying_track"
+
+
+                            echo "${pos_row[@]}"
                         else
                             pos_row[$i]=$next_row
                             pos_col[$i]=$next_col
@@ -345,11 +348,7 @@ while [[ $number_of_carts -gt 1 ]]; do
     sort_pos
 
     if [[ $number_of_carts -eq 1 ]]; then
-        for xy in "${!track_map[@]}"; do
-            if [[ ${track_map[$xy]} =~ [\<\>^v] ]]; then
-                echo "answer: ${xy#*,},${xy%,*}"
-            fi
-        done
+        echo "answer: ${pos_col[0]},${pos_row[0]}"
     fi
 
     #print_track_map
